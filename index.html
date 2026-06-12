@@ -518,6 +518,68 @@ table.dt .td-pic{white-space:nowrap}
   .kpi-row{grid-template-columns:1fr}
   .bn-item span{font-size:9.5px}
 }
+
+/* ═══ KPI TRACKING ═══ */
+.kpi-gauge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:22px}
+.kpi-gauge{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+.kpi-gauge .kg-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.kpi-gauge .kg-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.kpi-gauge .kg-title{font-size:14px;font-weight:700;color:var(--mmh-navy);line-height:1.2}
+.kpi-gauge .kg-sub{font-size:11px;color:var(--sub);margin-top:2px}
+.kpi-gauge .kg-nums{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+.kpi-gauge .kg-actual{font-size:36px;font-weight:800;line-height:1}
+.kpi-gauge .kg-target{font-size:15px;color:var(--sub);font-weight:600}
+.kpi-gauge .kg-pct{margin-left:auto;font-size:15px;font-weight:800;padding:3px 12px;border-radius:14px}
+.kpi-gauge .kg-track{height:12px;background:var(--gray);border-radius:7px;overflow:hidden}
+.kpi-gauge .kg-fill{height:100%;border-radius:7px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.kpi-gauge .kg-foot{font-size:11.5px;color:var(--sub);margin-top:10px;display:flex;justify-content:space-between}
+.kpi-gauge.ok .kg-icon{background:#dcfce7}.kpi-gauge.ok .kg-actual{color:var(--success)}.kpi-gauge.ok .kg-fill{background:linear-gradient(90deg,var(--success),#4ade80)}.kpi-gauge.ok .kg-pct{background:#dcfce7;color:#15803d}
+.kpi-gauge.warn .kg-icon{background:#fff3e0}.kpi-gauge.warn .kg-actual{color:var(--warning)}.kpi-gauge.warn .kg-fill{background:linear-gradient(90deg,var(--warning),#fbbf24)}.kpi-gauge.warn .kg-pct{background:#fff3e0;color:#b45309}
+.kpi-gauge.low .kg-icon{background:#fee2e2}.kpi-gauge.low .kg-actual{color:var(--danger)}.kpi-gauge.low .kg-fill{background:linear-gradient(90deg,var(--danger),#f87171)}.kpi-gauge.low .kg-pct{background:#fee2e2;color:#dc2626}
+.kpi-pace{font-size:10.5px;padding:2px 8px;border-radius:10px;font-weight:700;background:var(--pale);color:var(--mmh-blue)}
+.kpi-team-tbl .pic-cell{font-weight:700;color:var(--mmh-navy)}
+.kpi-mini-bar{height:6px;background:var(--gray);border-radius:3px;overflow:hidden;margin-top:4px;min-width:80px}
+.kpi-mini-bar i{display:block;height:100%;border-radius:3px}
+
+/* ═══ STAKEHOLDER / CBC ═══ */
+.cbc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.cbc-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-sm);transition:all .15s;cursor:pointer}
+.cbc-card:hover{border-color:var(--mmh-blue);box-shadow:var(--sh-md);transform:translateY(-2px)}
+.cbc-card .cc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.cbc-card .cc-av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--mmh-blue),var(--mmh-navy));color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.cbc-card .cc-name{font-size:15.5px;font-weight:700;color:var(--text)}
+.cbc-card .cc-job{font-size:12px;color:var(--sub);margin-top:1px}
+.cbc-card .cc-acc{font-size:12px;color:var(--mmh-blue);font-weight:600;margin-top:4px;display:flex;align-items:center;gap:5px}
+.cbc-card .cc-scales{display:flex;gap:10px;margin:12px 0}
+.scale-box{flex:1;background:var(--gray);border-radius:var(--r-sm);padding:9px 11px}
+.scale-box .sb-lbl{font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px}
+.scale-box .sb-dots{display:flex;gap:3px;margin-top:5px}
+.scale-box .sb-dot{width:14px;height:14px;border-radius:50%;background:#dde3ee}
+.scale-box.influence .sb-dot.on{background:var(--mmh-blue)}
+.scale-box.trust .sb-dot.on{background:var(--success)}
+.scale-box .sb-val{font-size:10.5px;color:var(--text);margin-top:5px;font-weight:600;line-height:1.3}
+.cbc-card .cc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cbc-card .cc-drivers{font-size:11.5px;color:var(--sub);margin-top:10px;line-height:1.5;border-top:1px dashed var(--border);padding-top:9px}
+.cbc-acc-group{margin-bottom:24px}
+.cbc-acc-head{font-size:14px;font-weight:700;color:var(--mmh-navy);padding:0 2px 12px;display:flex;align-items:center;gap:9px}
+.cbc-acc-head .cah-count{background:var(--lb3);color:var(--mmh-blue);border-radius:12px;font-size:11px;padding:2px 10px;font-weight:700}
+
+/* ═══ STAKEHOLDER PICKER ═══ */
+.stake-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--r-md);margin-bottom:8px;cursor:pointer;transition:all .14s}
+.stake-opt:hover{border-color:var(--mmh-blue);background:var(--pale)}
+.stake-opt .so-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--mmh-blue),var(--mmh-navy));color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.stake-opt .so-info{flex:1;min-width:0}
+.stake-opt .so-name{font-size:14px;font-weight:700;color:var(--text)}
+.stake-opt .so-detail{font-size:11.5px;color:var(--sub);margin-top:2px}
+.stake-opt .so-scales{display:flex;gap:5px;margin-top:4px}
+.stake-chip{font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px}
+.stake-chip.inf{background:var(--lb3);color:var(--mmh-blue)}
+.stake-chip.tru{background:#dcfce7;color:#15803d}
+.stake-result-tag{display:inline-block;background:var(--pale);border:1px solid var(--lb2);border-radius:8px;padding:8px 12px;font-size:12.5px;color:var(--mmh-navy);margin-bottom:8px;line-height:1.5}
+.stake-result-tag b{color:var(--mmh-blue)}
+
+/* fy badge */
+.fy-badge{background:var(--mmh-navy);color:var(--mmh-yellow);font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px}
 </style>
 </head>
 <body>
@@ -558,6 +620,10 @@ table.dt .td-pic{white-space:nowrap}
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
         <span>Dashboard</span>
       </button>
+      <button class="nav-item" data-view="kpi" onclick="switchView('kpi')">
+        <svg viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+        <span>KPI Tracking</span>
+      </button>
       <button class="nav-item" data-view="analytics" onclick="switchView('analytics')">
         <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
         <span>Thống kê sâu</span>
@@ -584,7 +650,24 @@ table.dt .td-pic{white-space:nowrap}
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
         <span>Ảnh địa bàn</span>
       </button>
+      <div class="nav-group-label">CRM</div>
+      <button class="nav-item" data-view="cbc" onclick="switchView('cbc')">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Key Stakeholder</span>
+      </button>
+      <button class="nav-item" data-view="presentation" onclick="switchView('presentation')">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        <span>Giới thiệu SP</span>
+      </button>
+      <button class="nav-item" data-view="newsku" onclick="switchView('newsku')">
+        <svg viewBox="0 0 24 24"><path d="M20 7L9 18l-5-5"/><circle cx="18" cy="6" r="3"/></svg>
+        <span>Account mở mới</span>
+      </button>
       <div class="nav-group-label">Báo cáo</div>
+      <button class="nav-item" data-view="monthly" onclick="switchView('monthly')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h8M8 18h5"/></svg>
+        <span>Monthly Report</span>
+      </button>
       <button class="nav-item" data-view="report" onclick="switchView('report')">
         <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
         <span>Báo cáo tuần</span>
@@ -771,6 +854,75 @@ table.dt .td-pic{white-space:nowrap}
           </div>
         </div>
       </div>
+
+      <!-- KPI TRACKING -->
+      <div class="view" id="view-kpi">
+        <div class="toolbar" style="justify-content:space-between">
+          <div class="range-nav">
+            <span class="f-lbl" style="margin:0">Năm tài chính</span>
+            <div class="sel-wrap"><select id="kpi-fy" onchange="loadKpi()" style="padding:9px 30px 9px 12px;border:1.5px solid var(--border);border-radius:10px;font-weight:700"></select></div>
+          </div>
+          <div class="conn-pill" id="kpi-fyrange"></div>
+        </div>
+        <div id="kpi-body"></div>
+      </div>
+
+      <!-- KEY STAKEHOLDER (CBC) -->
+      <div class="view" id="view-cbc">
+        <div class="toolbar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="cbc-search" placeholder="Tìm theo tên người, bệnh viện, chức vụ…" oninput="renderCbc()"/>
+          </div>
+          <div class="fl-select"><select id="cbc-fl-type" onchange="renderCbc()"><option value="">Mọi loại account</option></select></div>
+          <div class="fl-select"><select id="cbc-fl-area" onchange="renderCbc()"><option value="">Mọi khu vực</option></select></div>
+          <button class="tb-btn primary" onclick="openCbcModal()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm stakeholder</button>
+        </div>
+        <div id="cbc-body"><div class="empty-state"><div class="spinner"></div><p>Đang tải danh sách key stakeholder…</p></div></div>
+      </div>
+
+      <!-- PRODUCT PRESENTATION -->
+      <div class="view" id="view-presentation">
+        <div class="kpi-row" id="pres-kpis"></div>
+        <div class="toolbar" style="justify-content:space-between">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="pres-search" placeholder="Tìm buổi giới thiệu theo địa bàn…" oninput="renderPres()"/>
+          </div>
+          <button class="tb-btn primary" onclick="openPresModal()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm buổi giới thiệu</button>
+        </div>
+        <div class="panel"><div class="panel-head"><h3>Buổi giới thiệu sản phẩm</h3><span class="ph-sub"><span id="pres-count">0</span> buổi</span></div>
+          <div class="panel-body flush"><div class="tbl-wrap"><table class="dt"><thead id="pres-head"></thead><tbody id="pres-body"></tbody></table></div><div class="mobile-card mc-list" id="pres-cards"></div></div>
+        </div>
+      </div>
+
+      <!-- NEW SKU ACCOUNT -->
+      <div class="view" id="view-newsku">
+        <div class="kpi-row" id="sku-kpis"></div>
+        <div class="toolbar" style="justify-content:space-between">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="sku-search" placeholder="Tìm account / SKU…" oninput="renderSku()"/>
+          </div>
+          <button class="tb-btn primary" onclick="openSkuModal()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm account mở mới</button>
+        </div>
+        <div class="panel"><div class="panel-head"><h3>Account mở mới / SKU mới</h3><span class="ph-sub"><span id="sku-count">0</span> account</span></div>
+          <div class="panel-body flush"><div class="tbl-wrap"><table class="dt"><thead id="sku-head"></thead><tbody id="sku-body"></tbody></table></div><div class="mobile-card mc-list" id="sku-cards"></div></div>
+        </div>
+      </div>
+
+      <!-- MONTHLY REPORT -->
+      <div class="view" id="view-monthly">
+        <div class="toolbar" style="justify-content:space-between">
+          <div class="range-nav">
+            <span class="f-lbl" style="margin:0">Năm tài chính</span>
+            <div class="sel-wrap"><select id="mr-fy" onchange="loadMonthly()" style="padding:9px 30px 9px 12px;border:1.5px solid var(--border);border-radius:10px;font-weight:700"></select></div>
+            <div id="mr-admin-pic" style="display:none"><div class="sel-wrap"><select id="mr-pic" onchange="loadMonthly()" style="padding:9px 30px 9px 12px;border:1.5px solid var(--border);border-radius:10px"></select></div></div>
+          </div>
+          <button class="tb-btn primary" onclick="sendMonthlyReport()"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8"/></svg>Tạo PDF & gửi báo cáo tháng</button>
+        </div>
+        <div id="monthly-body"><div class="empty-state"><div class="spinner"></div><p>Đang tải Monthly Report…</p></div></div>
+      </div>
     </div>
   </div>
 
@@ -809,6 +961,16 @@ table.dt .td-pic{white-space:nowrap}
       <div class="msh-av" id="msh-av">?</div>
       <div class="msh-info"><div class="msh-name" id="msh-name">—</div><div class="msh-role" id="msh-role">—</div></div>
     </div>
+    <button class="msh-btn" onclick="switchView('kpi');closeMSheet()">
+      <svg viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"/></svg> KPI Tracking</button>
+    <button class="msh-btn" onclick="switchView('cbc');closeMSheet()">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Key Stakeholder</button>
+    <button class="msh-btn" onclick="switchView('presentation');closeMSheet()">
+      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg> Giới thiệu SP</button>
+    <button class="msh-btn" onclick="switchView('newsku');closeMSheet()">
+      <svg viewBox="0 0 24 24"><path d="M20 7L9 18l-5-5"/></svg> Account mở mới</button>
+    <button class="msh-btn" onclick="switchView('monthly');closeMSheet()">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Monthly Report</button>
     <button class="msh-btn" onclick="switchView('analytics');closeMSheet()">
       <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg> Thống kê sâu</button>
     <button class="msh-btn" onclick="switchView('week');closeMSheet()">
@@ -847,13 +1009,113 @@ table.dt .td-pic{white-space:nowrap}
         <div class="mf"><label>Task status</label><select id="nt-st"></select></div>
       </div>
       <div class="mf"><label style="display:flex;justify-content:space-between;align-items:center">Ghi chú / Kế hoạch
-        <button class="voice-btn" id="nt-voice" onclick="toggleVoice('nt-result',this);return false">🎤 Nói</button></label>
+        <span style="display:flex;gap:6px"><button class="voice-btn" type="button" onclick="openStakePicker('nt-result',$('nt-account').value);return false">👤 Người liên hệ</button><button class="voice-btn" id="nt-voice" onclick="toggleVoice('nt-result',this);return false">🎤 Nói</button></span></label>
         <textarea id="nt-result" placeholder="Có thể dùng 🎤 voice-to-text tiếng Việt…"></textarea></div>
     </div>
     <div class="modal-foot">
       <button class="btn-ghost" onclick="closeNewTask()">Huỷ</button>
       <button class="btn-fill" onclick="submitNewTask()">💾 Tạo task & ghi vào Sheet</button>
     </div>
+  </div>
+</div>
+
+<!-- PRESENTATION MODAL -->
+<div class="modal-bg" id="pres-modal">
+  <div class="modal-card">
+    <div class="modal-head"><h3>📽️ Thêm buổi giới thiệu sản phẩm</h3><button class="modal-close" onclick="closeModal('pres-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="mf" id="pres-pic-wrap" style="display:none"><label>Sales PIC</label><select id="pres-pic"></select></div>
+      <div class="mf-grid">
+        <div class="mf"><label>Ngày tổ chức</label><input type="date" id="pres-day"/></div>
+        <div class="mf"><label>Địa bàn / Account</label><input type="text" id="pres-account" list="acc-list" placeholder="Bệnh viện…"/></div>
+      </div>
+      <div class="mf-grid">
+        <div class="mf"><label>Số người dự kiến (target)</label><input type="number" id="pres-target" placeholder="VD: 20"/></div>
+        <div class="mf"><label>Số người thực tế (actual)</label><input type="number" id="pres-actual" placeholder="VD: 18"/></div>
+      </div>
+      <div class="mf"><label>Link folder bằng chứng (ảnh/tài liệu)</label><input type="text" id="pres-folder" placeholder="https://drive.google.com/…"/></div>
+      <div class="mf"><label>Review buổi giới thiệu (objective, kết quả…)</label><textarea id="pres-review" placeholder="- Objective:&#10;- Target audience:&#10;- Kết quả:"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('pres-modal')">Huỷ</button>
+      <button class="btn-fill" onclick="submitPres()">💾 Ghi vào Sheet</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW SKU MODAL -->
+<div class="modal-bg" id="sku-modal">
+  <div class="modal-card">
+    <div class="modal-head"><h3>🎯 Thêm account mở mới / SKU mới</h3><button class="modal-close" onclick="closeModal('sku-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="mf" id="sku-pic-wrap" style="display:none"><label>Sales PIC</label><select id="sku-pic"></select></div>
+      <div class="mf-grid">
+        <div class="mf"><label>Ngày phát sinh</label><input type="date" id="sku-day"/></div>
+        <div class="mf"><label>Account / Bệnh viện</label><input type="text" id="sku-account" list="acc-list" placeholder="Bệnh viện…"/></div>
+      </div>
+      <div class="mf"><label>Thông tin SKU mới (mã sản phẩm)</label><textarea id="sku-info" placeholder="VD: MSL22SH; MSL30SH" style="min-height:56px"></textarea></div>
+      <div class="mf"><label>Số lượng đặt hàng</label><textarea id="sku-qty" placeholder="VD: 30 pcs MSL22SH&#10;60 pcs MSL30SH" style="min-height:56px"></textarea></div>
+      <div class="mf"><label>Bằng chứng — Confirmed email from distributor</label>
+        <div class="media-row" style="margin-bottom:8px">
+          <button class="media-btn" type="button" onclick="$('sku-file').click()"><span class="mb-icon">📷</span>Chụp/Chọn ảnh email</button>
+        </div>
+        <div id="sku-confirm-preview"></div>
+        <input type="text" id="sku-confirm-url" placeholder="hoặc dán URL ảnh confirmed email" style="margin-top:8px"/>
+      </div>
+      <div class="mf"><label>Ghi chú</label><input type="text" id="sku-note" placeholder="VD: Done"/></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('sku-modal')">Huỷ</button>
+      <button class="btn-fill" onclick="submitSku()">💾 Ghi vào Sheet</button>
+    </div>
+  </div>
+</div>
+
+<!-- CBC STAKEHOLDER MODAL -->
+<div class="modal-bg" id="cbc-modal">
+  <div class="modal-card">
+    <div class="modal-head"><h3 id="cbc-modal-title">👤 Thêm key stakeholder</h3><button class="modal-close" onclick="closeModal('cbc-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="cbc-row" value=""/>
+      <div class="mf" id="cbc-pic-wrap" style="display:none"><label>Sales PIC</label><select id="cbc-pic"></select></div>
+      <div class="mf"><label>Account / Bệnh viện</label><input type="text" id="cbc-account" list="acc-list" placeholder="Bệnh viện…"/></div>
+      <div class="mf-grid">
+        <div class="mf"><label>Loại account</label><select id="cbc-type"></select></div>
+        <div class="mf"><label>Công/Tư</label><select id="cbc-sector"></select></div>
+      </div>
+      <div class="mf-grid">
+        <div class="mf"><label>Khu vực</label><select id="cbc-area"></select></div>
+        <div class="mf"><label>Tỉnh / Thành</label><input type="text" id="cbc-province" placeholder="VD: Ha Noi"/></div>
+      </div>
+      <div class="mf"><label>Địa chỉ</label><input type="text" id="cbc-address" placeholder="Địa chỉ bệnh viện"/></div>
+      <hr style="border:0;border-top:1px solid var(--border);margin:6px 0 16px"/>
+      <div class="mf-grid">
+        <div class="mf"><label>Tên người (stakeholder)</label><input type="text" id="cbc-name" placeholder="VD: Dr. Hiệp"/></div>
+        <div class="mf"><label>SĐT</label><input type="text" id="cbc-phone" placeholder="0xxxxxxxxx"/></div>
+      </div>
+      <div class="mf-grid">
+        <div class="mf"><label>Chuyên khoa</label><select id="cbc-spec"></select></div>
+        <div class="mf"><label>Chức vụ</label><select id="cbc-job"></select></div>
+      </div>
+      <div class="mf"><label>Vai trò mua hàng (Role)</label><select id="cbc-role"></select></div>
+      <div class="mf-grid">
+        <div class="mf"><label>Influence (mức ảnh hưởng)</label><select id="cbc-influence"></select></div>
+        <div class="mf"><label>Trust (độ tin tưởng Mani)</label><select id="cbc-trust"></select></div>
+      </div>
+      <div class="mf"><label>What drives them? (Challenges & Ambitions)</label><textarea id="cbc-drivers" placeholder="Động lực, thách thức, mục tiêu của họ…"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('cbc-modal')">Huỷ</button>
+      <button class="btn-fill" id="cbc-save-btn" onclick="submitCbc()">💾 Ghi vào Sheet</button>
+    </div>
+  </div>
+</div>
+
+<!-- STAKEHOLDER PICKER (cho daily task report) -->
+<div class="modal-bg" id="stake-picker">
+  <div class="modal-card" style="max-width:480px">
+    <div class="modal-head"><h3>👤 Chọn người liên hệ</h3><button class="modal-close" onclick="closeModal('stake-picker')">✕</button></div>
+    <div class="modal-body" id="stake-picker-body"></div>
   </div>
 </div>
 
@@ -872,6 +1134,7 @@ table.dt .td-pic{white-space:nowrap}
 
 <input type="file" id="file-camera" accept="image/*" capture="environment" class="hidden" onchange="handleFiles(this.files)"/>
 <input type="file" id="file-pick" accept="image/*" multiple class="hidden" onchange="handleFiles(this.files)"/>
+<input type="file" id="sku-file" accept="image/*" capture="environment" class="hidden" onchange="handleSkuConfirm(this.files)"/>
 
 <script>
 /* ═══════════════ CONFIG ═══════════════ */
@@ -891,12 +1154,19 @@ var S = {
   drawerRow:0,
   tasksSort:{key:"startDate", dir:-1},
   lastGps:null,          // #3 — toạ độ gần nhất
+  stakeholders:{}, influenceScale:[], trustScale:[], currentFy:"",
+  cbc:null, cbcLists:null, pres:null, sku:null, monthly:null, monthlyTaskOrder:[],
+  kpiFy:"", mrFy:"",
+  skuConfirm:null,       // {dataUrl, mime} ảnh confirmed email chờ upload
+  stakeTargetField:null, // textarea đang chèn stakeholder
+  stakeList:[],          // danh sách stakeholder đang hiển thị trong picker
 };
 var PG_BADGE={"Ophthalmic Knife":"badge-blue","Ophthalmic Suture":"badge-teal","Manipler":"badge-orange"};
 var PG_ICON ={"Ophthalmic Knife":"🔪","Ophthalmic Suture":"🧵","Manipler":"📎"};
 var FB_ICON ={"Tích cực":"😊","Trung lập":"😐","Không phản hồi":"🔇","Từ chối":"🙅"};
 var VIEW_META={
   dashboard:["Dashboard","Tổng quan hoạt động đi địa bàn"],
+  kpi:["KPI Tracking","Theo dõi KPI sales theo năm tài chính"],
   analytics:["Thống kê sâu","Phân tích theo PIC & khoảng thời gian"],
   today:["Hôm nay","Task theo từng ngày"],
   week:["Theo tuần","Lịch task trong tuần"],
@@ -904,6 +1174,10 @@ var VIEW_META={
   territory:["Theo địa bàn","Phân tích theo bệnh viện / account"],
   account:["Lịch sử địa bàn","Toàn bộ lịch sử đi địa bàn"],
   gallery:["Ảnh địa bàn","Thư viện ảnh đi địa bàn từ Drive"],
+  cbc:["Key Stakeholder","Customer Buying Centre — người ra quyết định"],
+  presentation:["Giới thiệu sản phẩm","Buổi giới thiệu sản phẩm (KPI)"],
+  newsku:["Account mở mới","Account / SKU mở mới (KPI)"],
+  monthly:["Monthly Report","Kế hoạch & kết quả theo Key Task"],
   report:["Báo cáo tuần","Gửi báo cáo tuần qua email"],
 };
 
@@ -1019,7 +1293,7 @@ function apiGet(action,extra,payload){
   });
 }
 function apiPost(bodyObj,timeout){
-  bodyObj.pic=S.pic||"";
+  if(!bodyObj.pic) bodyObj.pic=S.pic||"";
   var ctrl=("AbortController" in window)?new AbortController():null;
   var tid=ctrl?setTimeout(function(){ctrl.abort();},timeout||60000):0;
   return fetch(GAS_URL,{
@@ -1074,6 +1348,9 @@ function boot(pic){
     S.user=res.user||{pic:pic,role:"sales"}; S.pic=S.user.pic||pic;
     S.rows=res.rows||[]; S.lists=res.lists||{}; S.accounts=res.accounts||[];
     S.latestByAccount=res.latestByAccount||{};
+    S.stakeholders=res.stakeholders||{};
+    S.influenceScale=res.influenceScale||[]; S.trustScale=res.trustScale||[];
+    S.currentFy=res.currentFy||"";
     S.picView = S.user.role==="admin" ? "" : (S.user.pic||"");
     setProgress(80,"Đang dựng giao diện…");
     initUI();
@@ -1137,19 +1414,52 @@ function initUI(){
   // báo cáo tuần: mặc định tuần hiện tại
   var mon=mondayOf(new Date()), sun=new Date(mon); sun.setDate(mon.getDate()+6);
   $("rp-from").value=ymd(mon); $("rp-to").value=ymd(sun);
+  // FY dropdowns (KPI + Monthly)
+  initFyDropdowns();
+  // admin picker cho monthly
+  if(S.user&&S.user.role==="admin"){
+    $("mr-admin-pic").style.display="";
+    var pics=S.lists.pics||[];
+    $("mr-pic").innerHTML='<option value="">Tất cả PIC</option>'+pics.map(function(p){return '<option>'+esc(p)+'</option>';}).join("");
+    ["pres-pic","sku-pic","cbc-pic"].forEach(function(id){
+      var wrap=$(id+"-wrap"); if(wrap)wrap.style.display="";
+      $(id).innerHTML=pics.map(function(p){return '<option'+(p===S.user.pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
+    });
+  }
   renderAll();
   // warm-up GPS permission (không chặn UI)
   try{ getGps(); }catch(e){}
+}
+function fyOptionsList(){
+  // tạo list FY quanh hiện tại: từ FY current-2 → current+1
+  var cur=parseInt((S.currentFy||"FY67").replace(/\D/g,""),10)||67;
+  var out=[];
+  for(var f=cur+1; f>=cur-3; f--) out.push("FY"+f);
+  return out;
+}
+function initFyDropdowns(){
+  var opts=fyOptionsList();
+  var cur=S.currentFy||opts[1];
+  S.kpiFy=cur; S.mrFy=cur;
+  ["kpi-fy","mr-fy"].forEach(function(id){
+    var el=$(id); if(!el)return;
+    el.innerHTML=opts.map(function(f){return '<option'+(f===cur?" selected":"")+'>'+esc(f)+'</option>';}).join("");
+  });
 }
 function setPicView(p){
   S.picView=p;
   var chips=$("pic-bar").children;
   for(var i=0;i<chips.length;i++) chips[i].classList.remove("active");
   if(event&&event.currentTarget) event.currentTarget.classList.add("active");
-  S.gallery=null;
+  S.gallery=null; S.cbc=null; S.pres=null; S.sku=null; S.monthly=null;
   renderAll();
   if(S.view==="gallery") loadGallery(true);
   if(S.view==="analytics") loadAnalytics();
+  if(S.view==="kpi") loadKpi();
+  if(S.view==="cbc") loadCbc();
+  if(S.view==="presentation") loadPres();
+  if(S.view==="newsku") loadSku();
+  if(S.view==="monthly") loadMonthly();
 }
 
 /* ═══════════════ VIEW ROUTING ═══════════════ */
@@ -1168,6 +1478,11 @@ function switchView(v){
   else if(v==="today") renderDay();
   else if(v==="week") renderWeek();
   else if(v==="report") updateReportPreview();
+  else if(v==="kpi") loadKpi();
+  else if(v==="cbc"){ if(!S.cbc) loadCbc(); }
+  else if(v==="presentation"){ if(!S.pres) loadPres(); }
+  else if(v==="newsku"){ if(!S.sku) loadSku(); }
+  else if(v==="monthly") loadMonthly();
 }
 
 /* ═══════════════ RENDER ALL ═══════════════ */
@@ -1577,7 +1892,8 @@ function drawerHTML(r){
   // ── phần dữ liệu (cột trái) ──
   var data='<div class="dr-data">';
   data+='<div class="dr-sec"><div class="dr-sec-title">Kế hoạch / Plan</div><div class="dr-plan"><b>'+esc(accShort(r.account))+'</b> — '+esc(planLine)+'</div></div>';
-  data+='<div class="dr-sec"><div class="dr-sec-title">Kết quả thực địa <button class="voice-btn" onclick="toggleVoice(\'dr-result\',this);return false">🎤 Nói</button></div>'
+  data+='<div class="dr-sec"><div class="dr-sec-title">Kết quả thực địa <button class="voice-btn" onclick="toggleVoice(\'dr-result\',this);return false">🎤 Nói</button>'
+    +(mmh?'':'<button class="voice-btn" style="background:var(--pale);color:var(--mmh-blue);border-color:var(--lb2)" onclick="openStakePicker(\'dr-result\',\''+jsq(r.account)+'\');return false">👤 Người liên hệ</button>')+'</div>'
     +'<textarea id="dr-result" oninput="markDirty(\'taskResult\',this.value)" placeholder="Ghi kết quả buổi đi địa bàn…">'+esc(r.taskResult)+'</textarea></div>';
   data+='<div class="dr-sec"><div class="dr-grid2">'
     +selField("dr-status","taskStatus","Trạng thái",S.lists.taskStatus,r.taskStatus)
@@ -1919,11 +2235,485 @@ function submitNewTask(){
 document.addEventListener("keydown",function(e){
   if(e.key==="Escape"){
     if($("lightbox").classList.contains("show")) closeLightbox();
+    else if($("stake-picker").classList.contains("show")) closeModal("stake-picker");
+    else if($("pres-modal").classList.contains("show")) closeModal("pres-modal");
+    else if($("sku-modal").classList.contains("show")) closeModal("sku-modal");
+    else if($("cbc-modal").classList.contains("show")) closeModal("cbc-modal");
     else if($("new-task-modal").classList.contains("show")) closeNewTask();
     else if($("drawer").classList.contains("show")) closeDrawer();
     else if($("m-sheet").classList.contains("show")) closeMSheet();
   }
 });
+function closeModal(id){ stopVoice(); var m=$(id); if(m)m.classList.remove("show"); }
+
+/* ═══════════════════════════════════════════════════════════
+   KPI TRACKING
+   ═══════════════════════════════════════════════════════════ */
+function loadKpi(){
+  S.kpiFy=$("kpi-fy").value||S.currentFy;
+  var body=$("kpi-body");
+  body.innerHTML='<div class="empty-state"><div class="spinner"></div><p>Đang tính KPI '+esc(S.kpiFy)+'…</p></div>';
+  var extra={ fy:S.kpiFy };
+  if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
+  apiGet("kpi",extra).then(function(d){ renderKpi(d); })
+    .catch(function(e){ body.innerHTML='<div class="empty-state"><div class="es-icon">⚠️</div><p>'+esc(e.message)+'</p></div>'; });
+}
+function fyProgress(fy){
+  // % thời gian đã trôi qua trong FY để tính "pace" (đáng lẽ đạt bao nhiêu %)
+  var m=/FY?(\d+)/i.exec(fy); if(!m) return 1;
+  var endY=1959+parseInt(m[1],10);
+  var start=new Date(endY-1,8,1), end=new Date(endY,8,0);
+  var now=new Date();
+  if(now<=start) return 0; if(now>=end) return 1;
+  return (now-start)/(end-start);
+}
+function gaugeCard(icon,title,sub,actual,target,paceRatio){
+  var pct= target>0? Math.round(actual/target*100):0;
+  var expected= Math.round(paceRatio*100);
+  var cls= pct>=expected? "ok" : (pct>=expected*0.7? "warn":"low");
+  var paceTxt= paceRatio<1 ? ('Tiến độ kỳ vọng: '+expected+'%') : 'Cả năm';
+  return '<div class="kpi-gauge '+cls+'">'
+    +'<div class="kg-top"><div class="kg-icon">'+icon+'</div><div><div class="kg-title">'+esc(title)+'</div><div class="kg-sub">'+esc(sub)+'</div></div></div>'
+    +'<div class="kg-nums"><div class="kg-actual">'+actual+'</div><div class="kg-target">/ '+target+'</div><div class="kg-pct">'+pct+'%</div></div>'
+    +'<div class="kg-track"><div class="kg-fill" style="width:'+Math.min(100,pct)+'%"></div></div>'
+    +'<div class="kg-foot"><span>'+paceTxt+'</span><span class="kpi-pace">Còn '+Math.max(0,target-actual)+'</span></div>'
+    +'</div>';
+}
+function renderKpi(d){
+  var body=$("kpi-body");
+  $("kpi-fyrange").textContent="📅 "+d.range.from+" → "+d.range.to;
+  var pace=fyProgress(d.fy);
+  var html="";
+  if(d.scope==="single"){
+    var k=d.kpi;
+    html+='<div class="kpi-gauge-grid">'
+      +gaugeCard("🚗","Customer Visiting","Lượt thăm khách / năm",k.visiting,k.visitingTarget,pace)
+      +gaugeCard("📽️","Product Presentation","Buổi giới thiệu SP / năm",k.presentation,k.presentationTarget,pace)
+      +gaugeCard("🎯","New Account / SKU","Account mở mới / năm",k.newAccount,k.newAccountTarget,pace)
+      +'</div>';
+    // breakdown theo tháng
+    if(d.byMonth&&d.byMonth.length){
+      html+='<div class="panel"><div class="panel-head"><h3>Tiến độ theo tháng — '+esc(d.fy)+'</h3><span class="ph-sub">Visiting · Presentation · New SKU</span></div><div class="panel-body">';
+      html+=monthBreakdownChart(d.byMonth);
+      html+='</div></div>';
+    }
+    html+='<div style="font-size:12px;color:var(--sub);text-align:center;margin-top:8px">Tham gia '+k.paxActual+' lượt người dự các buổi giới thiệu · '+k.newSkuRows+' dòng SKU mở mới</div>';
+  } else {
+    // team view
+    var t=d.total;
+    html+='<div class="kpi-gauge-grid">'
+      +gaugeCard("🚗","Team Visiting","Tổng lượt thăm",t.visiting,t.visitingTarget,pace)
+      +gaugeCard("📽️","Team Presentation","Tổng buổi giới thiệu",t.presentation,t.presentationTarget,pace)
+      +gaugeCard("🎯","Team New Account","Tổng account mở mới",t.newAccount,t.newAccountTarget,pace)
+      +'</div>';
+    html+='<div class="panel"><div class="panel-head"><h3>KPI từng sales — '+esc(d.fy)+'</h3></div><div class="panel-body flush"><div class="tbl-wrap"><table class="dt kpi-team-tbl"><thead><tr><th>Sales PIC</th><th>Visiting (270)</th><th>Presentation (30)</th><th>New Account (12)</th></tr></thead><tbody>';
+    d.team.forEach(function(m){
+      html+='<tr style="cursor:default"><td class="pic-cell"><span class="pic-tag"><span class="pt-av">'+esc(initials(m.pic))+'</span>'+esc(m.pic)+'</span></td>'
+        +kpiCell(m.visiting,m.visitingTarget,"var(--mmh-blue)")
+        +kpiCell(m.presentation,m.presentationTarget,"var(--success)")
+        +kpiCell(m.newAccount,m.newAccountTarget,"#f0c000")+'</tr>';
+    });
+    html+='</tbody></table></div></div></div>';
+  }
+  body.innerHTML=html;
+}
+function kpiCell(a,t,color){
+  var pct=t>0?Math.round(a/t*100):0;
+  return '<td><div style="font-weight:700">'+a+' <span style="font-weight:400;color:var(--sub);font-size:11px">/ '+t+' · '+pct+'%</span></div>'
+    +'<div class="kpi-mini-bar"><i style="width:'+Math.min(100,pct)+'%;background:'+color+'"></i></div></td>';
+}
+function monthBreakdownChart(months){
+  var maxV=1; months.forEach(function(m){ maxV=Math.max(maxV,m.visiting,m.presentation,m.newSku); });
+  var html='<div style="display:flex;gap:6px;align-items:flex-end;height:160px;overflow-x:auto;padding-bottom:8px">';
+  months.forEach(function(m){
+    html+='<div style="flex:1;min-width:46px;text-align:center">'
+      +'<div style="display:flex;gap:2px;align-items:flex-end;justify-content:center;height:120px">'
+      +'<div title="Visiting: '+m.visiting+'" style="width:9px;background:var(--mmh-blue);border-radius:3px 3px 0 0;height:'+(m.visiting/maxV*100)+'%"></div>'
+      +'<div title="Presentation: '+m.presentation+'" style="width:9px;background:var(--success);border-radius:3px 3px 0 0;height:'+(m.presentation/maxV*100)+'%"></div>'
+      +'<div title="New SKU: '+m.newSku+'" style="width:9px;background:#f0c000;border-radius:3px 3px 0 0;height:'+(m.newSku/maxV*100)+'%"></div>'
+      +'</div><div style="font-size:9.5px;color:var(--sub);margin-top:4px">'+esc(m.label)+'</div></div>';
+  });
+  html+='</div><div style="display:flex;gap:16px;justify-content:center;margin-top:10px;font-size:11px">'
+    +'<span><i style="display:inline-block;width:10px;height:10px;background:var(--mmh-blue);border-radius:2px;margin-right:4px"></i>Visiting</span>'
+    +'<span><i style="display:inline-block;width:10px;height:10px;background:var(--success);border-radius:2px;margin-right:4px"></i>Presentation</span>'
+    +'<span><i style="display:inline-block;width:10px;height:10px;background:#f0c000;border-radius:2px;margin-right:4px"></i>New SKU</span></div>';
+  return html;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PRODUCT PRESENTATION
+   ═══════════════════════════════════════════════════════════ */
+function loadPres(){
+  var extra={}; if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
+  apiGet("presList",extra).then(function(d){ S.pres=d.rows||[]; renderPres(); })
+    .catch(function(e){ showToast("⚠️ "+e.message); });
+}
+function renderPres(){
+  var rows=(S.pres||[]).slice();
+  var q=($("pres-search").value||"").toLowerCase().trim();
+  if(q) rows=rows.filter(function(r){ return (r.account+" "+r.review+" "+r.pic).toLowerCase().indexOf(q)>=0; });
+  // KPI cards
+  var thisFy=rows.filter(function(r){return r.fy===S.currentFy;});
+  var paxT=0,paxA=0; thisFy.forEach(function(r){ paxT+=parseInt(r.targetPax,10)||0; paxA+=parseInt(r.actualPax,10)||0; });
+  $("pres-kpis").innerHTML=
+     kpiCard("Tổng buổi GT",rows.length,"📽️",false,esc(S.currentFy)+": "+thisFy.length+" buổi")
+    +kpiCard("Mục tiêu năm",CONFIG_TARGET_PRES,"🎯",false,"buổi / sale / năm")
+    +kpiCard("Người dự (actual)",paxA,"👥",true,"dự kiến "+paxT)
+    +kpiCard("TB người/buổi",thisFy.length?Math.round(paxA/thisFy.length):0,"📊",false,"trung bình");
+  $("pres-count").textContent=rows.length;
+  var cols=[{t:"Ngày",w:"96px"},{t:"Địa bàn"},{t:"PIC"},{t:"Target",w:"70px"},{t:"Actual",w:"70px"},{t:"Review"},{t:"Folder",w:"80px"}];
+  $("pres-head").innerHTML="<tr>"+cols.map(function(c){return '<th'+(c.w?' style="width:'+c.w+'"':'')+'>'+c.t+'</th>';}).join("")+"</tr>";
+  $("pres-body").innerHTML= rows.length? rows.map(function(r){
+    return '<tr style="cursor:default"><td class="td-date">'+esc(r.day||"")+'</td>'
+      +'<td class="td-acc">'+esc(accShort(r.account))+'</td>'
+      +'<td><span class="pic-tag"><span class="pt-av">'+esc(initials(r.pic))+'</span>'+esc(r.pic)+'</span></td>'
+      +'<td>'+esc(r.targetPax||"—")+'</td><td><b>'+esc(r.actualPax||"—")+'</b></td>'
+      +'<td style="font-size:12px;max-width:320px;white-space:pre-wrap">'+esc((r.review||"").slice(0,160))+((r.review||"").length>160?"…":"")+'</td>'
+      +'<td>'+(r.folderLink?'<a href="'+esc(r.folderLink)+'" target="_blank" rel="noopener" class="badge badge-blue" style="text-decoration:none">↗ Mở</a>':'<span style="color:var(--sub)">—</span>')+'</td></tr>';
+  }).join("") : emptyRow(7,"Chưa có buổi giới thiệu nào");
+  // mobile cards
+  var mc=$("pres-cards");
+  mc.innerHTML= rows.length? rows.map(function(r){
+    return '<div class="mc" style="cursor:default"><div class="mc-body"><div class="mc-top"><div class="mc-acc">'+esc(accShort(r.account))+'</div><div class="mc-date">'+esc(r.day||"")+'</div></div>'
+      +'<div class="mc-meta"><span class="badge badge-blue">'+esc(r.pic)+'</span><span class="badge badge-green">👥 '+esc(r.actualPax||"—")+'/'+esc(r.targetPax||"—")+'</span>'+(r.folderLink?'<a href="'+esc(r.folderLink)+'" target="_blank" class="badge badge-photo" style="text-decoration:none">↗ Folder</a>':'')+'</div>'
+      +(r.review?'<div class="mc-sub">'+esc(r.review.slice(0,100))+'</div>':'')+'</div></div>';
+  }).join("") : '<div class="empty-state"><div class="es-icon">📽️</div><p>Chưa có buổi giới thiệu</p></div>';
+}
+var CONFIG_TARGET_PRES=30;
+function openPresModal(){ $("pres-day").value=ymd(new Date()); $("pres-modal").classList.add("show"); }
+function submitPres(){
+  var acc=$("pres-account").value.trim();
+  if(!acc){ showToast("Nhập địa bàn"); return; }
+  var pl={ day:$("pres-day").value?dmy(new Date($("pres-day").value)):dmy(new Date()),
+    account:acc, targetPax:$("pres-target").value, actualPax:$("pres-actual").value,
+    folderLink:$("pres-folder").value.trim(), review:$("pres-review").value.trim() };
+  if(S.user&&S.user.role==="admin"&&$("pres-pic").value) pl.pic=$("pres-pic").value;
+  overlay(true,"Đang ghi","Lưu buổi giới thiệu vào Sheet…");
+  apiGet("createPres",null,pl).then(function(r){
+    overlay(false); closeModal("pres-modal");
+    ["pres-account","pres-target","pres-actual","pres-folder","pres-review"].forEach(function(id){$(id).value="";});
+    showToast("✓ Đã ghi buổi giới thiệu #"+(r.no||""));
+    loadPres(); if(S.view==="kpi")loadKpi();
+  }).catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NEW SKU ACCOUNT
+   ═══════════════════════════════════════════════════════════ */
+function loadSku(){
+  var extra={}; if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
+  apiGet("skuList",extra).then(function(d){ S.sku=d.rows||[]; renderSku(); })
+    .catch(function(e){ showToast("⚠️ "+e.message); });
+}
+function renderSku(){
+  var rows=(S.sku||[]).slice();
+  var q=($("sku-search").value||"").toLowerCase().trim();
+  if(q) rows=rows.filter(function(r){ return (r.account+" "+r.skuInfo+" "+r.pic).toLowerCase().indexOf(q)>=0; });
+  var thisFy=rows.filter(function(r){return r.fy===S.currentFy;});
+  var accSet={}; thisFy.forEach(function(r){if(r.account)accSet[r.account.toLowerCase()]=1;});
+  $("sku-kpis").innerHTML=
+     kpiCard("Tổng dòng SKU",rows.length,"📦",false,esc(S.currentFy)+": "+thisFy.length)
+    +kpiCard("Account mở mới",Object.keys(accSet).length,"🎯",true,esc(S.currentFy))
+    +kpiCard("Có bằng chứng",rows.filter(function(r){return r.confirmUrl;}).length,"📧","",false)
+    +kpiCard("Mục tiêu năm",12,"🏁",false,"account / sale / năm");
+  $("sku-count").textContent=rows.length;
+  var cols=[{t:"Tháng",w:"80px"},{t:"Account"},{t:"PIC"},{t:"SKU mới"},{t:"Số lượng"},{t:"Bằng chứng",w:"90px"},{t:"Note",w:"70px"}];
+  $("sku-head").innerHTML="<tr>"+cols.map(function(c){return '<th'+(c.w?' style="width:'+c.w+'"':'')+'>'+c.t+'</th>';}).join("")+"</tr>";
+  $("sku-body").innerHTML= rows.length? rows.map(function(r){
+    var conf= r.confirmUrl? '<span class="td-thumb"><img src="'+esc(thumbOf(r.confirmUrl))+'" loading="lazy" onclick="openLightbox(\''+jsq(thumbOf(r.confirmUrl))+'\',\''+jsq(r.confirmUrl)+'\',\''+jsq("Confirmed email · "+accShort(r.account))+'\')" onerror="this.style.display=\'none\'"/></span>' : '<span class="badge badge-gray">○</span>';
+    return '<tr style="cursor:default"><td class="td-date">'+esc(fmtMonth(r.month))+'</td>'
+      +'<td class="td-acc">'+esc(accShort(r.account))+'</td>'
+      +'<td><span class="pic-tag"><span class="pt-av">'+esc(initials(r.pic))+'</span>'+esc(r.pic)+'</span></td>'
+      +'<td style="font-size:12px;white-space:pre-wrap">'+esc(r.skuInfo||"—")+'</td>'
+      +'<td style="font-size:12px;white-space:pre-wrap">'+esc(r.orderQty||"—")+'</td>'
+      +'<td>'+conf+'</td>'
+      +'<td>'+(r.note?'<span class="badge badge-green">'+esc(r.note)+'</span>':'—')+'</td></tr>';
+  }).join("") : emptyRow(7,"Chưa có account mở mới");
+  var mc=$("sku-cards");
+  mc.innerHTML= rows.length? rows.map(function(r){
+    var thumb= r.confirmUrl? '<img class="mc-thumb" src="'+esc(thumbOf(r.confirmUrl))+'" loading="lazy" onclick="event.stopPropagation();openLightbox(\''+jsq(thumbOf(r.confirmUrl))+'\',\''+jsq(r.confirmUrl)+'\',\''+jsq(accShort(r.account))+'\')" onerror="this.style.display=\'none\'"/>':'';
+    return '<div class="mc" style="cursor:default">'+thumb+'<div class="mc-body"><div class="mc-top"><div class="mc-acc">'+esc(accShort(r.account))+'</div><div class="mc-date">'+esc(fmtMonth(r.month))+'</div></div>'
+      +'<div class="mc-meta"><span class="badge badge-blue">'+esc(r.pic)+'</span>'+(r.note?'<span class="badge badge-green">'+esc(r.note)+'</span>':'')+'</div>'
+      +'<div class="mc-sub">'+esc((r.skuInfo||"").replace(/\n/g," "))+'</div></div></div>';
+  }).join("") : '<div class="empty-state"><div class="es-icon">🎯</div><p>Chưa có account mở mới</p></div>';
+}
+function fmtMonth(m){ var s=String(m||"").replace(/[^\d]/g,""); if(s.length>=6) return s.slice(4,6)+"/"+s.slice(0,4); return s; }
+function openSkuModal(){ $("sku-day").value=ymd(new Date()); S.skuConfirm=null; $("sku-confirm-preview").innerHTML=""; $("sku-modal").classList.add("show"); }
+function handleSkuConfirm(files){
+  if(!files||!files.length) return;
+  overlay(true,"Đang xử lý","Nén ảnh bằng chứng…");
+  compressImage(files[0]).then(function(out){
+    S.skuConfirm={ dataUrl:out.dataUrl, mime:out.mime };
+    overlay(false);
+    $("sku-confirm-preview").innerHTML='<div class="pending-item" style="width:90px;height:90px"><img src="'+out.dataUrl+'"/><button class="pi-x" onclick="S.skuConfirm=null;$(\'sku-confirm-preview\').innerHTML=\'\'">✕</button><div class="pi-gps" style="background:rgba(58,92,170,.85)">📧 email</div></div>';
+    try{$("sku-file").value="";}catch(e){}
+  }).catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
+}
+function submitSku(){
+  var acc=$("sku-account").value.trim();
+  if(!acc){ showToast("Nhập account"); return; }
+  var pl={ day:$("sku-day").value?dmy(new Date($("sku-day").value)):dmy(new Date()),
+    account:acc, skuInfo:$("sku-info").value.trim(), orderQty:$("sku-qty").value.trim(),
+    confirmUrl:$("sku-confirm-url").value.trim(), note:$("sku-note").value.trim() };
+  if(S.user&&S.user.role==="admin"&&$("sku-pic").value) pl.pic=$("sku-pic").value;
+  overlay(true,"Đang ghi","Lưu account mở mới…");
+  var ym=(function(){var d=$("sku-day").value?new Date($("sku-day").value):new Date();return d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2);})();
+  // upload ảnh confirmed email trước (nếu có)
+  var pre= S.skuConfirm ? apiPost({ action:"uploadConfirm", account:acc, ym:ym,
+      base64:String(S.skuConfirm.dataUrl).split(",")[1], mimeType:S.skuConfirm.mime,
+      pic:(pl.pic||S.pic) }).then(function(r){ pl.confirmUrl=r.viewUrl; }) : Promise.resolve();
+  pre.then(function(){ return apiGet("createSku",null,pl); }).then(function(r){
+    overlay(false); closeModal("sku-modal");
+    ["sku-account","sku-info","sku-qty","sku-confirm-url","sku-note"].forEach(function(id){$(id).value="";});
+    S.skuConfirm=null; $("sku-confirm-preview").innerHTML="";
+    showToast("✓ Đã ghi account mở mới #"+(r.no||""));
+    loadSku(); if(S.view==="kpi")loadKpi();
+  }).catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CBC — KEY STAKEHOLDER
+   ═══════════════════════════════════════════════════════════ */
+function loadCbc(){
+  var body=$("cbc-body");
+  body.innerHTML='<div class="empty-state"><div class="spinner"></div><p>Đang tải key stakeholder…</p></div>';
+  var extra={}; if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
+  var p1=apiGet("cbcList",extra).then(function(d){ S.cbc=d.rows||[]; });
+  var p2= S.cbcLists? Promise.resolve() : apiGet("cbcLists").then(function(d){ S.cbcLists=d; fillCbcDropdowns(); });
+  Promise.all([p1,p2]).then(function(){ fillCbcFilters(); renderCbc(); })
+    .catch(function(e){ body.innerHTML='<div class="empty-state"><div class="es-icon">⚠️</div><p>'+esc(e.message)+'</p></div>'; });
+}
+function fillCbcDropdowns(){
+  var L=S.cbcLists; if(!L) return;
+  function fill(id,arr,ph){ var el=$(id); if(!el)return; el.innerHTML=(ph?'<option value="">'+ph+'</option>':'')+(arr||[]).map(function(x){return '<option>'+esc(x)+'</option>';}).join(""); }
+  fill("cbc-type",L.accountTypes,"—"); fill("cbc-sector",L.sectors,"—"); fill("cbc-area",L.areas,"—");
+  fill("cbc-spec",L.specialize,"—"); fill("cbc-job",L.jobTitles,"—"); fill("cbc-role",L.roles,"—");
+  fill("cbc-influence",L.influence,"—"); fill("cbc-trust",L.trust,"—");
+}
+function fillCbcFilters(){
+  var types={}, areas={};
+  (S.cbc||[]).forEach(function(r){ if(r.accountType)types[r.accountType]=1; if(r.area)areas[r.area]=1; });
+  var ft=$("cbc-fl-type"), fa=$("cbc-fl-area");
+  ft.innerHTML='<option value="">Mọi loại account</option>'+Object.keys(types).map(function(x){return '<option>'+esc(x)+'</option>';}).join("");
+  fa.innerHTML='<option value="">Mọi khu vực</option>'+Object.keys(areas).map(function(x){return '<option>'+esc(x)+'</option>';}).join("");
+}
+function scaleNum(s){ var m=/^\s*(\d)/.exec(String(s||"")); return m?parseInt(m[1],10):0; }
+function dotsHTML(n,cls){ var h=""; for(var i=1;i<=5;i++) h+='<div class="sb-dot'+(i<=n?" on":"")+'"></div>'; return h; }
+function renderCbc(){
+  var rows=(S.cbc||[]).slice();
+  var q=($("cbc-search").value||"").toLowerCase().trim();
+  var ft=$("cbc-fl-type").value, fa=$("cbc-fl-area").value;
+  if(q) rows=rows.filter(function(r){ return (r.stakeholder+" "+r.account+" "+r.jobTitle+" "+r.specialize+" "+r.province).toLowerCase().indexOf(q)>=0; });
+  if(ft) rows=rows.filter(function(r){return r.accountType===ft;});
+  if(fa) rows=rows.filter(function(r){return r.area===fa;});
+  var body=$("cbc-body");
+  if(!rows.length){ body.innerHTML='<div class="empty-state"><div class="es-icon">👥</div><p>Chưa có key stakeholder. Bấm "Thêm stakeholder" để tạo.</p></div>'; return; }
+  // group by account
+  var groups={};
+  rows.forEach(function(r){ var a=accShort(r.account)||"Khác"; (groups[a]=groups[a]||[]).push(r); });
+  var html="";
+  Object.keys(groups).sort().forEach(function(a){
+    var arr=groups[a];
+    html+='<div class="cbc-acc-group"><div class="cbc-acc-head">🏥 '+esc(a)+'<span class="cah-count">'+arr.length+' người</span>'
+      +(arr[0].province?'<span class="badge badge-gray">'+esc(arr[0].province)+'</span>':'')
+      +(arr[0].accountType?'<span class="badge badge-blue">'+esc(arr[0].accountType)+'</span>':'')+'</div><div class="cbc-grid">';
+    html+=arr.map(cbcCard).join("");
+    html+='</div></div>';
+  });
+  body.innerHTML=html;
+}
+function cbcCard(r){
+  var inf=scaleNum(r.influence), tru=scaleNum(r.trust);
+  return '<div class="cbc-card" onclick="openCbcEdit('+r.r+')">'
+    +'<div class="cc-top"><div class="cc-av">'+esc(initials(r.stakeholder||"?"))+'</div>'
+    +'<div style="flex:1;min-width:0"><div class="cc-name">'+esc(r.stakeholder||"(chưa có tên)")+'</div>'
+    +'<div class="cc-job">'+esc([r.jobTitle,r.specialize].filter(Boolean).join(" · ")||"—")+'</div></div></div>'
+    +'<div class="cc-scales">'
+      +'<div class="scale-box influence"><div class="sb-lbl">Influence</div><div class="sb-dots">'+dotsHTML(inf)+'</div><div class="sb-val">'+esc(r.influence||"—")+'</div></div>'
+      +'<div class="scale-box trust"><div class="sb-lbl">Trust</div><div class="sb-dots">'+dotsHTML(tru)+'</div><div class="sb-val">'+esc(r.trust||"—")+'</div></div>'
+    +'</div>'
+    +'<div class="cc-meta">'+(r.role?'<span class="badge badge-navy">'+esc(r.role)+'</span>':'')+(r.phone?'<span class="badge badge-gray">📞 '+esc(r.phone)+'</span>':'')+'</div>'
+    +(r.drivers?'<div class="cc-drivers">💡 '+esc(r.drivers.slice(0,140))+(r.drivers.length>140?"…":"")+'</div>':'')
+    +'</div>';
+}
+function openCbcModal(){
+  $("cbc-modal-title").textContent="👤 Thêm key stakeholder";
+  $("cbc-row").value="";
+  ["cbc-account","cbc-province","cbc-address","cbc-name","cbc-phone","cbc-drivers"].forEach(function(id){$(id).value="";});
+  ["cbc-type","cbc-sector","cbc-area","cbc-spec","cbc-job","cbc-role","cbc-influence","cbc-trust"].forEach(function(id){var el=$(id);if(el)el.selectedIndex=0;});
+  $("cbc-modal").classList.add("show");
+}
+function openCbcEdit(rowIndex){
+  var r=(S.cbc||[]).filter(function(x){return x.r===rowIndex;})[0]; if(!r)return;
+  $("cbc-modal-title").textContent="✏️ Sửa key stakeholder";
+  $("cbc-row").value=rowIndex;
+  $("cbc-account").value=r.account||""; $("cbc-province").value=r.province||"";
+  $("cbc-address").value=r.address||""; $("cbc-name").value=r.stakeholder||"";
+  $("cbc-phone").value=r.phone||""; $("cbc-drivers").value=r.drivers||"";
+  setSel("cbc-type",r.accountType); setSel("cbc-sector",r.sector); setSel("cbc-area",r.area);
+  setSel("cbc-spec",r.specialize); setSel("cbc-job",r.jobTitle); setSel("cbc-role",r.role);
+  setSel("cbc-influence",r.influence); setSel("cbc-trust",r.trust);
+  $("cbc-modal").classList.add("show");
+}
+function setSel(id,val){ var el=$(id); if(!el)return; var found=false;
+  for(var i=0;i<el.options.length;i++){ if(el.options[i].value===val||el.options[i].text===val){el.selectedIndex=i;found=true;break;} }
+  if(!found&&val){ var o=document.createElement("option");o.text=val;o.value=val;o.selected=true;el.add(o); }
+}
+function submitCbc(){
+  var name=$("cbc-name").value.trim(), acc=$("cbc-account").value.trim();
+  if(!name){ showToast("Nhập tên người liên hệ"); return; }
+  if(!acc){ showToast("Nhập account / bệnh viện"); return; }
+  var pl={ account:acc, accountType:$("cbc-type").value, sector:$("cbc-sector").value,
+    area:$("cbc-area").value, province:$("cbc-province").value, address:$("cbc-address").value,
+    stakeholder:name, phone:$("cbc-phone").value.trim(), specialize:$("cbc-spec").value,
+    jobTitle:$("cbc-job").value, role:$("cbc-role").value,
+    influence:$("cbc-influence").value, trust:$("cbc-trust").value, drivers:$("cbc-drivers").value.trim() };
+  var rowIndex=$("cbc-row").value;
+  if(S.user&&S.user.role==="admin"&&$("cbc-pic").value) pl.pic=$("cbc-pic").value;
+  overlay(true,"Đang ghi","Lưu stakeholder vào Sheet CBC…");
+  var req= rowIndex? apiGet("updateCbc",{rowIndex:rowIndex},{updates:pl}) : apiGet("createCbc",null,pl);
+  req.then(function(r){
+    overlay(false); closeModal("cbc-modal");
+    showToast("✓ "+(r.message||"Đã lưu stakeholder"));
+    loadCbc();
+    // cập nhật stakeholder map để daily report dùng ngay
+    refreshStakeholders();
+  }).catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
+}
+function refreshStakeholders(){
+  apiGet("cbcList",{}).then(function(d){
+    var map={};
+    (d.rows||[]).forEach(function(r){
+      if(!r.stakeholder)return;
+      var k=accShort(r.account).toLowerCase();
+      (map[k]=map[k]||[]).push({name:r.stakeholder,jobTitle:r.jobTitle,specialize:r.specialize,role:r.role,influence:r.influence,trust:r.trust,account:r.account});
+    });
+    S.stakeholders=map;
+  }).catch(function(){});
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MONTHLY REPORT
+   ═══════════════════════════════════════════════════════════ */
+function loadMonthly(){
+  S.mrFy=$("mr-fy").value||S.currentFy;
+  var body=$("monthly-body");
+  body.innerHTML='<div class="empty-state"><div class="spinner"></div><p>Đang tải Monthly Report '+esc(S.mrFy)+'…</p></div>';
+  var extra={ fy:S.mrFy };
+  if(S.user&&S.user.role==="admin"){ var mp=$("mr-pic").value; if(mp)extra.view=mp; else if(S.picView)extra.view=S.picView; }
+  apiGet("monthlyList",extra).then(function(d){ S.monthly=d.rows||[]; S.monthlyTaskOrder=d.taskOrder||[]; renderMonthly(); })
+    .catch(function(e){ body.innerHTML='<div class="empty-state"><div class="es-icon">⚠️</div><p>'+esc(e.message)+'</p></div>'; });
+}
+function renderMonthly(){
+  var rows=S.monthly||[];
+  var body=$("monthly-body");
+  if(!rows.length){ body.innerHTML='<div class="empty-state"><div class="es-icon">📅</div><p>Chưa có dữ liệu Monthly Report cho '+esc(S.mrFy)+'</p></div>'; return; }
+  // group by PIC
+  var groups={}, order=[];
+  rows.forEach(function(r){ if(!groups[r.pic]){groups[r.pic]=[];order.push(r.pic);} groups[r.pic].push(r); });
+  var html="";
+  order.forEach(function(pic){
+    var arr=groups[pic];
+    // sort theo task order
+    arr.sort(function(a,b){ var ia=S.monthlyTaskOrder.indexOf(a.typeTask),ib=S.monthlyTaskOrder.indexOf(b.typeTask); return (ia<0?99:ia)-(ib<0?99:ib); });
+    html+='<div class="panel"><div class="panel-head"><h3>📋 '+esc(pic)+'</h3><span class="ph-sub">'+esc(arr[0].area||"")+' · '+esc(S.mrFy)+' · '+arr.length+' key task</span></div>'
+      +'<div class="panel-body flush"><div class="tbl-wrap"><table class="dt"><thead><tr><th style="width:200px">Type Task</th><th>Plan</th><th>Result</th></tr></thead><tbody>';
+    arr.forEach(function(r){
+      var canEdit = (S.user.role==="admin") || picMatchJs(r.pic,S.user.pic);
+      html+='<tr style="cursor:'+(canEdit?"pointer":"default")+'"'+(canEdit?' onclick="openMonthlyEdit('+r.r+')"':'')+'>'
+        +'<td style="font-weight:700;color:var(--mmh-navy);background:var(--pale)">'+esc(r.typeTask)+'</td>'
+        +'<td style="font-size:12px;white-space:pre-wrap;max-width:340px">'+esc(r.plan||"—")+'</td>'
+        +'<td style="font-size:12px;white-space:pre-wrap;max-width:340px">'+esc(r.result||"—")+(canEdit?'<div style="font-size:10px;color:var(--mmh-blue);margin-top:4px">✏️ Bấm để cập nhật</div>':'')+'</td></tr>';
+    });
+    html+='</tbody></table></div></div></div>';
+  });
+  body.innerHTML=html;
+}
+function picMatchJs(a,b){ return String(a||"").toLowerCase().indexOf(String(b||"").toLowerCase())>=0; }
+function openMonthlyEdit(rowIndex){
+  var r=(S.monthly||[]).filter(function(x){return x.r===rowIndex;})[0]; if(!r)return;
+  S.drawerRow=rowIndex; S.dirty={};
+  var html='<div class="dr-head"><div class="dh-ico">📋</div><div class="dh-body"><div class="dh-acc">'+esc(r.typeTask)+'</div><div class="dh-meta">'+esc(r.pic)+' · '+esc(r.area||"")+' · '+esc(r.fy)+'</div></div><button class="dh-close" onclick="closeDrawer()">✕</button></div>'
+    +'<div class="dr-body"><div class="dr-sec"><div class="dr-sec-title">Plan (Kế hoạch)</div>'
+    +'<textarea id="mr-plan" oninput="markDirty(\'plan\',this.value)" style="min-height:160px" placeholder="Kế hoạch theo key task…">'+esc(r.plan)+'</textarea></div>'
+    +'<div class="dr-sec"><div class="dr-sec-title">Result (Kết quả) <button class="voice-btn" onclick="toggleVoice(\'mr-result\',this);return false">🎤 Nói</button></div>'
+    +'<textarea id="mr-result" oninput="markDirty(\'result\',this.value)" style="min-height:160px" placeholder="Kết quả thực hiện…">'+esc(r.result)+'</textarea></div></div>'
+    +'<div class="dr-foot"><button class="save-btn" id="dr-save" onclick="saveMonthly()">💾 Cập nhật Monthly Report</button></div>';
+  $("drawer-content").innerHTML=html;
+  $("drawer-bg").classList.add("show"); $("drawer").classList.add("show");
+  document.body.style.overflow="hidden";
+}
+function saveMonthly(){
+  if(!Object.keys(S.dirty).length){ showToast("Chưa có thay đổi"); return; }
+  overlay(true,"Đang lưu","Ghi Monthly Report vào Sheet…");
+  apiGet("updateMonthly",{rowIndex:S.drawerRow},{updates:S.dirty}).then(function(){
+    overlay(false); closeDrawer(); showToast("✓ Đã cập nhật Monthly Report"); loadMonthly();
+  }).catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
+}
+function sendMonthlyReport(){
+  overlay(true,"Đang gửi","Tạo PDF báo cáo tháng & gửi email…");
+  var body={ action:"monthlyReport", fy:S.mrFy };
+  if(S.user&&S.user.role==="admin"){ var mp=$("mr-pic").value; if(mp)body.view=mp; }
+  apiPost(body,90000).then(function(r){
+    overlay(false); showToast("✓ "+(r.message||"Đã gửi báo cáo tháng"));
+  }).catch(function(e){
+    apiGet("monthlyReport",{fy:S.mrFy, view:(S.user.role==="admin"?($("mr-pic").value||""):"")}).then(function(r){
+      overlay(false); showToast("✓ "+(r.message||"Đã gửi"));
+    }).catch(function(e2){ overlay(false); showToast("⚠️ "+e2.message); });
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STAKEHOLDER PICKER (cho daily task report)
+   ═══════════════════════════════════════════════════════════ */
+function openStakePicker(targetId,account){
+  S.stakeTargetField=targetId;
+  var key=accShort(account).toLowerCase();
+  var list=S.stakeholders[key]||[];
+  S.stakeList=list;  // lưu để pickStakeholder dùng theo index
+  var body=$("stake-picker-body");
+  var html='';
+  if(!list.length){
+    html+='<p style="font-size:13px;color:var(--sub);margin-bottom:14px">Chưa có key stakeholder cho <b>'+esc(accShort(account))+'</b> trong CBC.</p>';
+  } else {
+    html+='<p style="font-size:12px;color:var(--sub);margin-bottom:12px">Chọn người liên hệ tại <b>'+esc(accShort(account))+'</b>:</p>';
+    html+=list.map(function(s,idx){
+      var inf=scaleNum(s.influence), tru=scaleNum(s.trust);
+      return '<div class="stake-opt" onclick="pickStakeholder('+idx+')">'
+        +'<div class="so-av">'+esc(initials(s.name||"?"))+'</div>'
+        +'<div class="so-info"><div class="so-name">'+esc(s.name)+'</div>'
+        +'<div class="so-detail">'+esc([s.jobTitle,s.specialize].filter(Boolean).join(" · ")||"—")+'</div>'
+        +'<div class="so-scales"><span class="stake-chip inf">Influence '+inf+'</span><span class="stake-chip tru">Trust '+tru+'</span></div></div></div>';
+    }).join("");
+  }
+  html+='<button class="btn-ghost" style="width:100%;margin-top:8px" onclick="closeModal(\'stake-picker\');openCbcQuickAdd(\''+jsq(account)+'\')">+ Thêm stakeholder mới cho địa bàn này</button>';
+  body.innerHTML=html;
+  $("stake-picker").classList.add("show");
+}
+function pickStakeholder(idx){
+  var s=(S.stakeList||[])[idx]; if(!s) return;
+  var inf=scaleNum(s.influence), tru=scaleNum(s.trust);
+  // format: Người liên hệ: Dr. Hiệp/Clinical Head/Opt - Phaco/2-Influence/3-Trust
+  var line="Người liên hệ: "+s.name
+    +(s.jobTitle?"/"+s.jobTitle:"")
+    +(s.specialize?"/"+s.specialize:"")
+    +"/"+inf+"-Influence/"+tru+"-Trust";
+  var ta=$(S.stakeTargetField);
+  if(ta){
+    var cur=ta.value||"";
+    // bỏ dòng "Người liên hệ:" cũ nếu có
+    cur=cur.replace(/^Người liên hệ:[^\n]*\n?/,"");
+    ta.value=line+"\n"+cur;
+    if(ta.id==="dr-result") markDirty("taskResult",ta.value);
+  }
+  closeModal("stake-picker");
+  showToast("✓ Đã chèn người liên hệ");
+}
+function openCbcQuickAdd(account){
+  openCbcModal();
+  $("cbc-account").value=accShort(account);
+}
+
 </script>
 
 </body>
