@@ -667,7 +667,7 @@ function jsonp(params,timeout){
   return new Promise(function(res,rej){
     var cb="__mmh_cb_"+(++_jsonpId)+"_"+Date.now();
     var s=document.createElement("script"); var done=false;
-    var timer=setTimeout(function(){ if(!done){cleanup();var e=new Error("Hết thời gian chờ máy chủ (JSONP timeout)");e.code="TIMEOUT";rej(e);} },timeout||25000);
+    var timer=setTimeout(function(){ if(!done){cleanup();var e=new Error("Hết thời gian chờ máy chủ (JSONP timeout)");e.code="TIMEOUT";rej(e);} },timeout||20000);
     function cleanup(){ done=true; clearTimeout(timer); try{delete window[cb];}catch(e){window[cb]=undefined;} if(s.parentNode)s.parentNode.removeChild(s); }
     window[cb]=function(data){ cleanup(); res(data); };
     s.src=GAS_URL+"?"+buildQS(params)+"&callback="+cb;
@@ -704,30 +704,22 @@ function apiGet(action,extra,payload){
   var params={action:action, pic:S.pic||""};
   if(extra) Object.keys(extra).forEach(function(k){params[k]=extra[k];});
   if(payload) params.p=JSON.stringify(payload);
-  // Chạy JSONP và fetch SONG SONG. Lấy kết quả nào ok===... hợp lệ về trước.
-  // Nếu cả 2 fail, ưu tiên báo lỗi rõ nhất (NOT_JSON/HTML → quyền; TIMEOUT → URL/chậm).
-  return new Promise(function(resolve,reject){
-    var settled=false, errs=[], pending=2;
-    function ok(r){
-      if(settled) return;
-      if(r&&r.ok===false){ fail(new Error(r.error||"Lỗi")); return; }
-      settled=true; resolve(r);
-    }
-    function fail(e){
-      errs.push(e); pending--;
-      if(settled) return;
-      // NOT_JSON = bằng chứng chắc chắn deployment sai quyền → reject ngay,
-      // không chờ nhánh JSONP (vốn sẽ treo tới timeout vì script trả HTML).
-      if(e&&e.code==="NOT_JSON"){ settled=true; reject(e); return; }
-      if(pending<=0){
-        settled=true;
-        var notJson=errs.filter(function(x){return x&&x.code==="NOT_JSON";})[0];
-        var timeout=errs.filter(function(x){return x&&x.code==="TIMEOUT";})[0];
-        reject(notJson||timeout||errs[errs.length-1]||new Error("Không kết nối được"));
-      }
-    }
-    jsonp(params).then(ok,fail);
-    getFetch(params).then(ok,fail);
+  // JSONP là KÊNH CHÍNH (giống bản mobile đã chạy ổn) — miễn nhiễm CORS trên GitHub Pages.
+  // Chỉ khi JSONP thất bại (timeout/script lỗi) mới thử fetch như phương án dự phòng.
+  return jsonp(params).then(function(r){
+    if(r&&r.ok===false) throw new Error(r.error||"Lỗi");
+    return r;
+  }, function(eJsonp){
+    // JSONP hỏng → thử fetch (có thể bị CORS chặn, nhưng vẫn cố)
+    return getFetch(params).then(function(r){
+      if(r&&r.ok===false) throw new Error(r.error||"Lỗi");
+      return r;
+    }, function(eFetch){
+      // Cả 2 hỏng: ưu tiên lỗi chẩn đoán rõ nhất
+      if(eFetch&&eFetch.code==="NOT_JSON") throw eFetch;   // sai quyền deployment
+      if(eJsonp&&eJsonp.code==="TIMEOUT") throw eJsonp;     // máy chủ chậm / URL sai
+      throw eJsonp||eFetch||new Error("Không kết nối được");
+    });
   });
 }
 function apiPost(bodyObj,timeout){
@@ -836,7 +828,11 @@ function runDiagnostic(){
       var verdict;
       var jsonpOk=report[0].indexOf("✅")===0;
       var fetchOk=report[1]&&report[1].indexOf("✅")===0;
-      if(jsonpOk||fetchOk) verdict='<b style="color:var(--success)">Kết luận: máy chủ SỐNG.</b> App sẽ chạy được — bấm “Thử lại”.';
+      if(jsonpOk){
+        verdict='<b style="color:var(--success)">Kết luận: máy chủ SỐNG (qua JSONP).</b> App chạy được — bấm “Thử lại”.'
+          +(!fetchOk?'<br><span style="font-size:11px;color:var(--sub)">(Fetch lỗi CORS là bình thường trên GitHub Pages — app dùng JSONP nên không ảnh hưởng.)</span>':'');
+      }
+      else if(fetchOk) verdict='<b style="color:var(--success)">Kết luận: máy chủ SỐNG (qua fetch).</b> Bấm “Thử lại”.';
       else if((report[1]||"").indexOf("NOT_JSON")>=0||(report[1]||"").indexOf("HTML")>=0) verdict='<b style="color:var(--danger)">Kết luận: deployment chưa cho phép truy cập.</b> Sửa quyền Web App thành Anyone rồi Deploy lại.';
       else verdict='<b style="color:var(--danger)">Kết luận: không tới được /exec.</b> Kiểm tra lại GAS_URL hoặc tạo deployment mới.';
       if(out) out.innerHTML=report.map(function(x){return "• "+x;}).join("<br>")+"<br><br>"+verdict
