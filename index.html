@@ -759,12 +759,12 @@ table.dt .td-pic{white-space:nowrap}
               Email hiển thị tên bạn, người nhận reply về đúng email của bạn.
             </p>
             <div class="mf-grid" style="margin-bottom:16px">
-              <div><label class="f-lbl">Tuần báo cáo — Từ</label><input type="date" id="rp-from" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:10px"/></div>
-              <div><label class="f-lbl">Đến</label><input type="date" id="rp-to" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:10px"/></div>
+              <div><label class="f-lbl">Tuần báo cáo — Từ</label><input type="date" id="rp-from" onchange="updateReportPreview()" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:10px"/></div>
+              <div><label class="f-lbl">Đến</label><input type="date" id="rp-to" onchange="updateReportPreview()" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:10px"/></div>
             </div>
             <div id="rp-admin-pic" style="display:none;margin-bottom:16px">
               <label class="f-lbl">Gửi báo cáo cho PIC</label>
-              <div class="sel-wrap"><select id="rp-pic" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:10px"></select></div>
+              <div class="sel-wrap"><select id="rp-pic" onchange="updateReportPreview()" style="width:100%;padding:11px;border:1.5px solid var(--border);border-radius:10px"></select></div>
             </div>
             <div id="rp-preview" style="background:var(--pale);border:1px solid var(--lb2);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--text);margin-bottom:18px;line-height:1.7"></div>
             <button class="btn-fill" style="width:100%;justify-content:center;padding:14px" onclick="sendWeeklyReport()">📧 Tạo PDF & gửi báo cáo tuần</button>
@@ -1565,10 +1565,10 @@ function latestUpdateHTML(r){
     +'<div class="lp-res">'+esc(lu.taskResult||"(chưa có kết quả)")+'</div>'
     +'<div class="lp-tags">'+tags+'</div></div></div>';
 }
-function selField(id,label,options,current){
+function selField(id,field,label,options,current){
   var opts='<option value="">—</option>'+(options||[]).map(function(o){return '<option'+(o===current?" selected":"")+'>'+esc(o)+'</option>';}).join("");
   if(current&&(options||[]).indexOf(current)<0) opts='<option value="'+esc(current)+'" selected>'+esc(current)+'</option>'+opts;
-  return '<div><span class="f-lbl">'+esc(label)+'</span><div class="sel-wrap"><select id="'+id+'" onchange="markDirty(\''+id.replace("dr-","")+'\',this.value)">'+opts+'</select></div></div>';
+  return '<div><span class="f-lbl">'+esc(label)+'</span><div class="sel-wrap"><select id="'+id+'" onchange="markDirty(\''+field+'\',this.value)">'+opts+'</select></div></div>';
 }
 function drawerHTML(r){
   var pics=photoUrls(r);
@@ -1580,19 +1580,19 @@ function drawerHTML(r){
   data+='<div class="dr-sec"><div class="dr-sec-title">Kết quả thực địa <button class="voice-btn" onclick="toggleVoice(\'dr-result\',this);return false">🎤 Nói</button></div>'
     +'<textarea id="dr-result" oninput="markDirty(\'taskResult\',this.value)" placeholder="Ghi kết quả buổi đi địa bàn…">'+esc(r.taskResult)+'</textarea></div>';
   data+='<div class="dr-sec"><div class="dr-grid2">'
-    +selField("dr-status","Trạng thái",S.lists.taskStatus,r.taskStatus)
-    +selField("dr-sp","Sales process",S.lists.salesProcess,r.salesProcess)
+    +selField("dr-status","taskStatus","Trạng thái",S.lists.taskStatus,r.taskStatus)
+    +selField("dr-sp","salesProcess","Sales process",S.lists.salesProcess,r.salesProcess)
     +'</div></div>';
   data+='<div class="dr-sec"><div class="dr-grid2">'
-    +selField("dr-fb","Phản hồi KH",S.lists.feedback,r.feedback)
-    +selField("dr-na","Next action",S.lists.nextAction,r.nextAction)
+    +selField("dr-fb","feedback","Phản hồi KH",S.lists.feedback,r.feedback)
+    +selField("dr-na","nextAction","Next action",S.lists.nextAction,r.nextAction)
     +'</div></div>';
   data+='<div class="dr-sec"><div class="dr-grid2">'
-    +selField("dr-tt","Type task",S.lists.typeTask,r.typeTask)
-    +selField("dr-ta","Type action",S.lists.typeAction,r.typeAction)
+    +selField("dr-tt","typeTask","Type task",S.lists.typeTask,r.typeTask)
+    +selField("dr-ta","typeAction","Type action",S.lists.typeAction,r.typeAction)
     +'</div></div>';
   data+='<div class="dr-sec"><div class="dr-grid2">'
-    +selField("dr-pg","Nhóm sản phẩm",S.lists.productGroup,r.productGroup)
+    +selField("dr-pg","productGroup","Nhóm sản phẩm",S.lists.productGroup,r.productGroup)
     +'<div><span class="f-lbl">Ngày</span><input type="text" id="dr-date" value="'+esc(r.startDate)+'" onchange="markDirty(\'startDate\',this.value)" placeholder="dd/mm/yyyy"/></div>'
     +'</div></div>';
   if(r.nextAction==="Dừng lại"||r.stopReason){
