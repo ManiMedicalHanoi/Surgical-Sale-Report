@@ -580,6 +580,33 @@ table.dt .td-pic{white-space:nowrap}
 
 /* fy badge */
 .fy-badge{background:var(--mmh-navy);color:var(--mmh-yellow);font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px}
+
+/* ── Gallery cardbox lớn rõ + bảng PIC×tháng ── */
+.gal-summary.big{gap:16px;margin-bottom:20px}
+.gal-summary.big .gal-stat{flex:1;min-width:160px;padding:20px 22px;border-radius:var(--r-lg);box-shadow:var(--sh-md);display:flex;align-items:center;gap:16px}
+.gal-summary.big .gal-stat .gs-ico{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;background:var(--pale)}
+.gal-summary.big .gal-stat.accent{background:linear-gradient(135deg,var(--mmh-blue),var(--mmh-navy));border:none}
+.gal-summary.big .gal-stat.accent .gs-v{color:var(--mmh-yellow)}
+.gal-summary.big .gal-stat.accent .gs-l{color:rgba(255,255,255,.8)}
+.gal-summary.big .gal-stat.accent .gs-ico{background:rgba(255,255,255,.16)}
+.gal-summary.big .gs-v{font-size:34px;font-weight:800;line-height:1;color:var(--mmh-navy)}
+.gal-summary.big .gs-l{font-size:12.5px;color:var(--sub);margin-top:5px;font-weight:600}
+.pic-month-wrap{overflow-x:auto;margin-bottom:20px}
+.pic-month{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+.pic-month th,.pic-month td{border:1px solid var(--border);padding:10px 12px;text-align:center}
+.pic-month thead th{background:var(--lb3);color:var(--mmh-navy);font-weight:700;font-size:12px;position:sticky;top:0}
+.pic-month td.pic-name{text-align:left;font-weight:700;color:var(--mmh-navy);background:var(--pale);white-space:nowrap}
+.pic-month td.cnt{font-weight:700;color:var(--mmh-blue)}
+.pic-month td.zero{color:#c4ccdb;font-weight:400}
+.pic-month td.tot{background:#FFF9CC;font-weight:800;color:#856f00}
+.pic-month tfoot td{background:var(--mmh-navy);color:#fff;font-weight:700}
+.pic-month tfoot td.tot{background:#0a2548;color:var(--mmh-yellow)}
+@media(max-width:720px){
+  .gal-summary.big{gap:10px}
+  .gal-summary.big .gal-stat{min-width:calc(50% - 5px);padding:14px;gap:10px}
+  .gal-summary.big .gs-v{font-size:26px}
+  .gal-summary.big .gal-stat .gs-ico{width:42px;height:42px;font-size:20px}
+}
 </style>
 </head>
 <body>
@@ -822,7 +849,12 @@ table.dt .td-pic{white-space:nowrap}
 
       <!-- GALLERY (#3) -->
       <div class="view" id="view-gallery">
-        <div class="gal-summary" id="gal-summary"></div>
+        <div class="gal-summary big" id="gal-summary"></div>
+        <div class="panel" id="gal-picmonth-panel" style="display:none">
+          <div class="panel-head"><h3>📊 Số ảnh theo PIC × tháng</h3>
+            <span class="ph-sub" id="gal-export-wrap"></span></div>
+          <div class="panel-body"><div class="pic-month-wrap" id="gal-picmonth"></div></div>
+        </div>
         <div class="gal-toolbar">
           <div id="gal-month-bar" style="display:flex;gap:8px;flex-wrap:wrap;flex:1"></div>
           <button class="tb-btn" onclick="loadGallery(true)">
@@ -830,6 +862,21 @@ table.dt .td-pic{white-space:nowrap}
           </button>
         </div>
         <div id="gallery-body"><div class="empty-state"><div class="es-icon">🖼️</div><p>Đang tải ảnh địa bàn từ Drive…</p></div></div>
+      </div>
+
+      <!-- MODAL: chọn PIC xuất Excel -->
+      <div class="modal-bg" id="gal-export-modal">
+        <div class="modal-card" style="max-width:440px">
+          <div class="modal-head"><h3>📥 Tải Excel ảnh địa bàn</h3><button class="modal-close" onclick="closeModal('gal-export-modal')">✕</button></div>
+          <div class="modal-body">
+            <p style="font-size:13px;color:var(--sub);margin-bottom:14px">Chọn PIC cần xuất. Mỗi PIC một sheet, gồm: Ngày · Tháng · PIC · Địa bàn · URL ảnh · Địa điểm · Count.</p>
+            <div id="gal-export-pics" style="display:flex;flex-direction:column;gap:8px"></div>
+          </div>
+          <div class="modal-foot">
+            <button class="btn-ghost" onclick="closeModal('gal-export-modal')">Huỷ</button>
+            <button class="btn-fill" onclick="runGalleryExcel()">📥 Tạo & tải Excel</button>
+          </div>
+        </div>
       </div>
 
       <!-- WEEKLY REPORT (#4) -->
@@ -1412,8 +1459,8 @@ function initUI(){
   if(S.user.role==="admin"){
     var bar=$("pic-bar"); bar.style.display="flex";
     var pics=(S.lists.pics||[]);
-    var html='<button class="filter-chip gold'+(S.picView===""?" active":"")+'" onclick="setPicView(\'\')">👥 Tất cả PIC</button>';
-    pics.forEach(function(p){ html+='<button class="filter-chip'+(S.picView===p?" active":"")+'" onclick="setPicView(\''+jsq(p)+'\')">'+esc(p)+'</button>'; });
+    var html='<button class="filter-chip gold'+(S.picView===""?" active":"")+'" data-pic="" onclick="setPicView(\'\')">👥 Tất cả PIC</button>';
+    pics.forEach(function(p){ html+='<button class="filter-chip" data-pic="'+esc(p)+'"'+(S.picView===p?' class="active"':'')+' onclick="setPicView(\''+jsq(p)+'\')">'+esc(p)+'</button>'; });
     bar.innerHTML=html;
     $("rp-admin-pic").style.display="";
     $("rp-pic").innerHTML=pics.map(function(p){return '<option'+(p===S.user.pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
@@ -1463,17 +1510,20 @@ function initFyDropdowns(){
 function setPicView(p){
   S.picView=p;
   var chips=$("pic-bar").children;
-  for(var i=0;i<chips.length;i++) chips[i].classList.remove("active");
-  if(event&&event.currentTarget) event.currentTarget.classList.add("active");
-  S.gallery=null; S.cbc=null; S.pres=null; S.sku=null; S.monthly=null;
-  renderAll();
+  for(var i=0;i<chips.length;i++){
+    chips[i].classList.toggle("active", chips[i].getAttribute("data-pic")===p);
+  }
+  // xoá toàn bộ cache phụ để ép tải lại đúng PIz đang chọn
+  S.gallery=null; S.galSummary=null; S.cbc=null; S.pres=null; S.sku=null; S.monthly=null;
+  renderAll();   // task/dashboard/today/week/territory lọc client-side qua visibleRows()
+  // các view cần gọi backend với view=PIC → tải lại đúng tab đang mở
   if(S.view==="gallery") loadGallery(true);
-  if(S.view==="analytics") loadAnalytics();
-  if(S.view==="kpi") loadKpi();
-  if(S.view==="cbc") loadCbc();
-  if(S.view==="presentation") loadPres();
-  if(S.view==="newsku") loadSku();
-  if(S.view==="monthly") loadMonthly();
+  else if(S.view==="analytics") loadAnalytics();
+  else if(S.view==="kpi") loadKpi();
+  else if(S.view==="cbc") loadCbc();
+  else if(S.view==="presentation") loadPres();
+  else if(S.view==="newsku") loadSku();
+  else if(S.view==="monthly") loadMonthly();
 }
 
 /* ═══════════════ VIEW ROUTING ═══════════════ */
@@ -2183,6 +2233,67 @@ function openLightbox(thumb,full,cap){
 function closeLightbox(){ $("lightbox").classList.remove("show"); }
 
 /* ═══════════════ GALLERY (#3) ═══════════════ */
+// Bảng đếm số ảnh theo PIC × tháng + nút mở modal export
+function renderPicMonthTable(byPic){
+  var panel=$("gal-picmonth-panel"), wrap=$("gal-picmonth");
+  var pics=Object.keys(byPic).sort();
+  if(!pics.length){ if(panel)panel.style.display="none"; return; }
+  if(panel)panel.style.display="";
+  // gom tất cả tháng xuất hiện
+  var monthSet={};
+  pics.forEach(function(pn){ Object.keys(byPic[pn]).forEach(function(k){ if(k!=="total") monthSet[k]=1; }); });
+  var months=Object.keys(monthSet).sort();   // YYYYMM tăng dần
+  var colTot={}; months.forEach(function(m){colTot[m]=0;}); var grand=0;
+  var html='<table class="pic-month"><thead><tr><th style="text-align:left">PIC \\ Tháng</th>';
+  months.forEach(function(m){ html+='<th>'+esc(m.slice(4,6)+"/"+m.slice(0,4))+'</th>'; });
+  html+='<th>Tổng</th></tr></thead><tbody>';
+  pics.forEach(function(pn){
+    html+='<tr><td class="pic-name">'+esc(pn)+'</td>';
+    months.forEach(function(m){
+      var c=byPic[pn][m]||0; colTot[m]+=c;
+      html+='<td class="'+(c?"cnt":"zero")+'">'+(c||"·")+'</td>';
+    });
+    var tot=byPic[pn].total||0; grand+=tot;
+    html+='<td class="tot">'+tot+'</td></tr>';
+  });
+  html+='</tbody><tfoot><tr><td style="text-align:left">Tổng cộng</td>';
+  months.forEach(function(m){ html+='<td>'+(colTot[m]||0)+'</td>'; });
+  html+='<td class="tot">'+grand+'</td></tr></tfoot></table>';
+  wrap.innerHTML=html;
+  // nút export (admin mới có; sales chỉ xuất chính mình)
+  var ew=$("gal-export-wrap");
+  if(ew) ew.innerHTML='<button class="tb-btn primary" style="padding:7px 13px" onclick="openGalleryExcel()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Tải Excel</button>';
+}
+function openGalleryExcel(){
+  var box=$("gal-export-pics");
+  var pics;
+  if(S.user&&S.user.role==="admin"){
+    pics=(S.lists.pics||[]).slice();
+    // chỉ liệt kê PIC có ảnh (nếu summary có byPic)
+    var have=S.galSummary&&S.galSummary.byPic?Object.keys(S.galSummary.byPic):null;
+    if(have&&have.length) pics=pics.filter(function(p){return have.indexOf(p)>=0;}).concat(have.filter(function(p){return pics.indexOf(p)<0;}));
+  } else { pics=[S.user.pic]; }
+  box.innerHTML=pics.map(function(p){
+    return '<label class="stake-opt" style="cursor:pointer;margin:0"><input type="checkbox" class="gal-exp-cb" value="'+esc(p)+'"'+(S.picView===p||pics.length===1?" checked":"")+' style="width:18px;height:18px;margin-right:6px"/><div class="so-info"><div class="so-name">'+esc(p)+'</div></div></label>';
+  }).join("");
+  $("gal-export-modal").classList.add("show");
+}
+function runGalleryExcel(){
+  var cbs=document.querySelectorAll(".gal-exp-cb");
+  var sel=[]; cbs.forEach(function(c){ if(c.checked) sel.push(c.value); });
+  if(!sel.length){ showToast("Chọn ít nhất 1 PIC"); return; }
+  closeModal("gal-export-modal");
+  overlay(true,"Đang tạo Excel","Quét ảnh Drive & dựng file .xlsx…");
+  apiGet("galleryExcel",{pics:sel.join(",")}).then(function(r){
+    overlay(false);
+    if(r.downloadUrl){
+      // tải file
+      var a=document.createElement("a"); a.href=r.downloadUrl; a.download=r.fileName||"MMH_Gallery.xlsx";
+      document.body.appendChild(a); a.click(); a.remove();
+      showToast("✓ "+(r.message||"Đã tạo Excel")+" — đang tải về");
+    } else showToast("⚠️ Không nhận được file");
+  }).catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
+}
 function loadGallery(force){
   if(S.gallery&&!force){ renderGallery(); return; }
   var body=$("gallery-body");
@@ -2198,12 +2309,15 @@ function loadGallery(force){
 function setGalMonth(m){ S.galMonth=m; renderGallery(); }
 function renderGallery(){
   var photos=S.gallery||[];
-  // summary
-  var sum=S.galSummary||{total:photos.length,accounts:0,byMonth:{}};
+  // summary — cardbox to rõ
+  var sum=S.galSummary||{total:photos.length,accounts:0,byMonth:{},byPic:{}};
+  var nPic=Object.keys(sum.byPic||{}).length;
   $("gal-summary").innerHTML=
-     '<div class="gal-stat"><div class="gs-v">'+sum.total+'</div><div class="gs-l">📷 Tổng ảnh</div></div>'
-    +'<div class="gal-stat"><div class="gs-v">'+(sum.accounts||0)+'</div><div class="gs-l">🏥 Địa bàn</div></div>'
-    +'<div class="gal-stat"><div class="gs-v">'+Object.keys(sum.byMonth||{}).length+'</div><div class="gs-l">🗓 Số tháng</div></div>';
+     '<div class="gal-stat accent"><div class="gs-ico">📷</div><div><div class="gs-v">'+sum.total+'</div><div class="gs-l">Tổng ảnh đã chụp</div></div></div>'
+    +'<div class="gal-stat"><div class="gs-ico">🏥</div><div><div class="gs-v">'+(sum.accounts||0)+'</div><div class="gs-l">Địa bàn có ảnh</div></div></div>'
+    +'<div class="gal-stat"><div class="gs-ico">🗓</div><div><div class="gs-v">'+Object.keys(sum.byMonth||{}).length+'</div><div class="gs-l">Số tháng</div></div></div>'
+    +'<div class="gal-stat"><div class="gs-ico">👤</div><div><div class="gs-v">'+nPic+'</div><div class="gs-l">PIC có ảnh</div></div></div>';
+  renderPicMonthTable(sum.byPic||{});
   // month bar
   var months={}; photos.forEach(function(p){ if(p.ym) months[p.ym]=(months[p.ym]||0)+1; });
   var mk=Object.keys(months).sort().reverse();
