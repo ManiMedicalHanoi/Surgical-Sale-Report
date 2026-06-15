@@ -582,6 +582,16 @@ table.dt .td-pic{white-space:nowrap}
 .fy-badge{background:var(--mmh-navy);color:var(--mmh-yellow);font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px}
 
 /* ── Gallery cardbox lớn rõ + bảng PIC×tháng ── */
+/* FAB tạo task cho desktop (#5) */
+#fab-desktop{display:none}
+@media(min-width:721px){
+  #fab-desktop{display:flex;position:fixed;right:30px;bottom:30px;z-index:4000;width:60px;height:60px;border-radius:50%;border:none;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--mmh-blue),var(--mmh-navy));color:#fff;box-shadow:0 10px 30px rgba(58,92,170,.5);cursor:pointer;transition:transform .15s,box-shadow .15s}
+  #fab-desktop:hover{transform:scale(1.08);box-shadow:0 14px 38px rgba(58,92,170,.6)}
+  #fab-desktop:active{transform:scale(.94)}
+  #fab-desktop svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  #fab-desktop .fab-tip{position:absolute;right:72px;background:var(--mmh-navy);color:#fff;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
+  #fab-desktop:hover .fab-tip{opacity:1}
+}
 .gal-summary.big{gap:16px;margin-bottom:20px}
 .gal-summary.big .gal-stat{flex:1;min-width:160px;padding:20px 22px;border-radius:var(--r-lg);box-shadow:var(--sh-md);display:flex;align-items:center;gap:16px}
 .gal-summary.big .gal-stat .gs-ico{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;background:var(--pale)}
@@ -869,7 +879,11 @@ table.dt .td-pic{white-space:nowrap}
         <div class="modal-card" style="max-width:440px">
           <div class="modal-head"><h3>📥 Tải Excel ảnh địa bàn</h3><button class="modal-close" onclick="closeModal('gal-export-modal')">✕</button></div>
           <div class="modal-body">
-            <p style="font-size:13px;color:var(--sub);margin-bottom:14px">Chọn PIC cần xuất. Mỗi PIC một sheet, gồm: Ngày · Tháng · PIC · Địa bàn · URL ảnh · Địa điểm · Count.</p>
+            <p style="font-size:13px;color:var(--sub);margin-bottom:14px">Chọn PIC cần xuất. Mỗi PIC một sheet, gồm: Ngày · Tháng · PIC · Địa bàn · URL ảnh · Địa điểm.</p>
+            <div class="mf"><label>Lọc theo tháng (tuỳ chọn)</label>
+              <div class="sel-wrap"><select id="gal-export-month"><option value="">Tất cả các tháng</option></select></div>
+            </div>
+            <label style="display:block;font-size:10.5px;font-weight:700;color:var(--sub);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">Chọn PIC</label>
             <div id="gal-export-pics" style="display:flex;flex-direction:column;gap:8px"></div>
           </div>
           <div class="modal-foot">
@@ -998,6 +1012,10 @@ table.dt .td-pic{white-space:nowrap}
   </nav>
 
   <button id="fab" onclick="openNewTask()" title="Tạo task">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+  <button id="fab-desktop" onclick="openNewTask()" title="Tạo task mới">
+    <span class="fab-tip">Tạo task mới</span>
     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
 
@@ -1368,7 +1386,7 @@ function apiPost(bodyObj,timeout){
 function setProgress(p,m){ $("load-progress").style.width=p+"%"; if(m)$("load-msg").textContent=m; }
 var KNOWN_PICS=[
   {pic:"Viet Ha",role:"sales"},{pic:"Khang",role:"sales"},{pic:"Trang",role:"sales"},
-  {pic:"Giang",role:"admin"},{pic:"Tuyen",role:"admin"},
+  {pic:"Giang",role:"admin"},{pic:"Tuyen",role:"admin"},{pic:"Admin",role:"admin"},
 ];
 window.addEventListener("load",function(){
   var saved=""; try{ saved=localStorage.getItem("mmh_fr_pic")||""; }catch(e){}
@@ -1453,9 +1471,14 @@ function runDiagnostic(){
 function updateStatus(on,label){ $("conn-dot").className="dot "+(on?"online":"error"); $("conn-label").textContent= on?("Online · "+label):(label||"Lỗi kết nối"); }
 
 function initUI(){
-  $("su-av").textContent=initials(S.user.pic);
+ $("su-av").textContent=initials(S.user.pic);
   $("su-name").textContent=S.user.pic;
   $("su-role").textContent= S.user.role==="admin"?"Quản trị · mọi PIC":"Sales";
+  // sales thường: ẩn sạch mọi chỗ chọn PIC
+  if(S.user.role!=="admin"){
+    var pb=$("pic-bar"); if(pb) pb.style.display="none";
+    ["nt-pic-wrap","pres-pic-wrap","sku-pic-wrap","cbc-pic-wrap","rp-admin-pic","mr-admin-pic"].forEach(function(id){var el=$(id);if(el)el.style.display="none";});
+  }
   if(S.user.role==="admin"){
     var bar=$("pic-bar"); bar.style.display="flex";
     var pics=(S.lists.pics||[]);
@@ -2260,22 +2283,33 @@ function renderPicMonthTable(byPic){
   months.forEach(function(m){ html+='<td>'+(colTot[m]||0)+'</td>'; });
   html+='<td class="tot">'+grand+'</td></tr></tfoot></table>';
   wrap.innerHTML=html;
-  // nút export (admin mới có; sales chỉ xuất chính mình)
+  // nút export + lọc tháng
   var ew=$("gal-export-wrap");
-  if(ew) ew.innerHTML='<button class="tb-btn primary" style="padding:7px 13px" onclick="openGalleryExcel()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Tải Excel</button>';
+  if(ew){
+    var monOpts='<option value="ALL">Mọi tháng</option>'+months.map(function(m){return '<option value="'+m+'"'+(S.galMonth===m?" selected":"")+'>'+m.slice(4,6)+"/"+m.slice(0,4)+'</option>';}).join("");
+    ew.innerHTML='<span class="fl-select" style="margin-right:8px"><select onchange="setGalMonth(this.value)" style="padding:7px 28px 7px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-weight:600">'+monOpts+'</select></span>'
+      +'<button class="tb-btn primary" style="padding:7px 13px" onclick="openGalleryExcel()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Tải Excel</button>';
+  }
 }
 function openGalleryExcel(){
   var box=$("gal-export-pics");
   var pics;
   if(S.user&&S.user.role==="admin"){
     pics=(S.lists.pics||[]).slice();
-    // chỉ liệt kê PIC có ảnh (nếu summary có byPic)
     var have=S.galSummary&&S.galSummary.byPic?Object.keys(S.galSummary.byPic):null;
     if(have&&have.length) pics=pics.filter(function(p){return have.indexOf(p)>=0;}).concat(have.filter(function(p){return pics.indexOf(p)<0;}));
   } else { pics=[S.user.pic]; }
   box.innerHTML=pics.map(function(p){
     return '<label class="stake-opt" style="cursor:pointer;margin:0"><input type="checkbox" class="gal-exp-cb" value="'+esc(p)+'"'+(S.picView===p||pics.length===1?" checked":"")+' style="width:18px;height:18px;margin-right:6px"/><div class="so-info"><div class="so-name">'+esc(p)+'</div></div></label>';
   }).join("");
+  // tháng từ summary.byMonth (gộp tất cả PIC đang tải)
+  var months={};
+  var bp=(S.galSummary&&S.galSummary.byPic)||{};
+  Object.keys(bp).forEach(function(pn){ Object.keys(bp[pn]).forEach(function(k){ if(k!=="total")months[k]=1; }); });
+  if(!Object.keys(months).length && S.galSummary && S.galSummary.byMonth) months=S.galSummary.byMonth;
+  var mk=Object.keys(months).sort().reverse();
+  var sel=$("gal-export-month");
+  sel.innerHTML='<option value="">Tất cả các tháng</option>'+mk.map(function(m){return '<option value="'+m+'">'+m.slice(4,6)+"/"+m.slice(0,4)+'</option>';}).join("");
   $("gal-export-modal").classList.add("show");
 }
 function runGalleryExcel(){
@@ -2283,8 +2317,9 @@ function runGalleryExcel(){
   var sel=[]; cbs.forEach(function(c){ if(c.checked) sel.push(c.value); });
   if(!sel.length){ showToast("Chọn ít nhất 1 PIC"); return; }
   closeModal("gal-export-modal");
+  var mon=$("gal-export-month")?$("gal-export-month").value:"";
   overlay(true,"Đang tạo Excel","Quét ảnh Drive & dựng file .xlsx…");
-  apiGet("galleryExcel",{pics:sel.join(",")}).then(function(r){
+  apiGet("galleryExcel",{pics:sel.join(","),month:mon}).then(function(r){
     overlay(false);
     if(r.downloadUrl){
       // tải file
