@@ -653,18 +653,15 @@ table.dt .td-pic{white-space:nowrap}
     </div>
     <nav class="sb-nav">
       <div class="nav-group-label">Tổng quan</div>
-      <button class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+      <button class="nav-item active" data-view="analytics" onclick="switchView('analytics')">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-        <span>Dashboard</span>
+        <span>Tổng quan & Thống kê</span>
       </button>
       <button class="nav-item" data-view="kpi" onclick="switchView('kpi')">
         <svg viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
         <span>KPI Tracking</span>
       </button>
-      <button class="nav-item" data-view="analytics" onclick="switchView('analytics')">
-        <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
-        <span>Thống kê sâu</span>
-      </button>
+      
       <div class="nav-group-label">Công việc</div>
       <button class="nav-item" data-view="today" onclick="switchView('today')">
         <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -740,22 +737,8 @@ table.dt .td-pic{white-space:nowrap}
     <div id="views">
       <div id="pic-bar"></div>
 
-      <!-- DASHBOARD -->
-      <div class="view active" id="view-dashboard">
-        <div class="kpi-row" id="dash-kpis"></div>
-        <div class="panel">
-          <div class="panel-head"><h3>Hoạt động gần đây</h3><span class="ph-sub">7 ngày qua</span></div>
-          <div class="panel-body flush"><div class="tbl-wrap"><table class="dt"><thead id="dash-recent-head"></thead><tbody id="dash-recent-body"></tbody></table></div><div class="mobile-card mc-list" id="dash-recent-cards"></div></div>
-        </div>
-        <div class="chart-grid">
-          <div class="panel"><div class="panel-head"><h3>Theo trạng thái</h3></div><div class="panel-body" id="dash-chart-status"></div></div>
-          <div class="panel"><div class="panel-head"><h3>Theo nhóm sản phẩm</h3></div><div class="panel-body" id="dash-chart-pg"></div></div>
-          <div class="panel"><div class="panel-head"><h3>Phản hồi khách hàng</h3></div><div class="panel-body" id="dash-chart-fb"></div></div>
-          <div class="panel"><div class="panel-head"><h3>Sales process</h3></div><div class="panel-body" id="dash-chart-sp"></div></div>
-        </div>
-      </div>
-
       <!-- ANALYTICS (#6) -->
+      <!-- ANALYTICS (gộp Dashboard + Thống kê sâu) -->
       <div class="view" id="view-analytics">
         <div class="toolbar" style="justify-content:space-between">
           <div class="range-nav">
@@ -769,14 +752,14 @@ table.dt .td-pic{white-space:nowrap}
         </div>
         <div class="kpi-row" id="an-kpis"></div>
         <div class="chart-grid">
-          <div class="panel"><div class="panel-head"><h3>Loại khách hàng</h3><span class="ph-sub">unique accounts</span></div><div class="panel-body" id="an-chart-custtype"></div></div>
+          <div class="panel"><div class="panel-head"><h3>Sales process</h3><span class="ph-sub">bấm để xem task</span></div><div class="panel-body" id="an-chart-sp"></div></div>
+          <div class="panel"><div class="panel-head"><h3>Sản phẩm focus</h3><span class="ph-sub">bấm để xem task</span></div><div class="panel-body" id="an-chart-pg"></div></div>
+          <div class="panel"><div class="panel-head"><h3>Customer feedback</h3><span class="ph-sub">bấm để xem task</span></div><div class="panel-body" id="an-chart-fb"></div></div>
+          <div class="panel"><div class="panel-head"><h3>Next action</h3><span class="ph-sub">bấm để xem task</span></div><div class="panel-body" id="an-chart-na"></div></div>
           <div class="panel"><div class="panel-head"><h3>Loại hoạt động (Type action)</h3></div><div class="panel-body" id="an-chart-action"></div></div>
-          <div class="panel"><div class="panel-head"><h3>Sales process</h3></div><div class="panel-body" id="an-chart-sp"></div></div>
-          <div class="panel"><div class="panel-head"><h3>Sản phẩm focus</h3></div><div class="panel-body" id="an-chart-pg"></div></div>
-          <div class="panel"><div class="panel-head"><h3>Customer feedback</h3></div><div class="panel-body" id="an-chart-fb"></div></div>
-          <div class="panel"><div class="panel-head"><h3>Next action</h3></div><div class="panel-body" id="an-chart-na"></div></div>
           <div class="panel"><div class="panel-head"><h3>Type task</h3></div><div class="panel-body" id="an-chart-tt"></div></div>
           <div class="panel"><div class="panel-head"><h3>Trạng thái</h3></div><div class="panel-body" id="an-chart-status"></div></div>
+          <div class="panel"><div class="panel-head"><h3>Loại khách hàng</h3><span class="ph-sub">unique accounts</span></div><div class="panel-body" id="an-chart-custtype"></div></div>
         </div>
       </div>
 
@@ -989,7 +972,7 @@ table.dt .td-pic{white-space:nowrap}
 
   <!-- MOBILE BOTTOM NAV -->
   <nav id="bottom-nav">
-    <button class="bn-item active" data-view="dashboard" onclick="switchView('dashboard')">
+    <button class="bn-item active" data-view="analytics" onclick="switchView('analytics')">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
       <span>Tổng quan</span>
     </button>
@@ -1219,7 +1202,7 @@ var GAS_URL = "https://script.google.com/macros/s/AKfycbwwGhYaN5sOF3bJWI-3LYDYaH
 var S = {
   user:null, pic:"", rows:[], lists:{}, accounts:[], latestByAccount:{},
   picView:"",
-  view:"dashboard",
+  view:"analytics", _drill:null,
   day:new Date(),
   weekAnchor:new Date(), weekSel:"ALL",
   photoRow:0, pasteArmRow:0,
@@ -1243,7 +1226,7 @@ var FB_ICON ={"Tích cực":"😊","Trung lập":"😐","Không phản hồi":"�
 var VIEW_META={
   dashboard:["Dashboard","Tổng quan hoạt động đi địa bàn"],
   kpi:["KPI Tracking","Theo dõi KPI sales theo năm tài chính"],
-  analytics:["Thống kê sâu","Phân tích theo PIC & khoảng thời gian"],
+  analytics:["Tổng quan & Thống kê","Phân tích theo PIC & khoảng thời gian"],
   today:["Hôm nay","Task theo từng ngày"],
   week:["Theo tuần","Lịch task trong tuần"],
   tasks:["Tất cả task","Lọc & tìm kiếm toàn bộ task"],
@@ -1575,7 +1558,6 @@ function switchView(v){
 /* ═══════════════ RENDER ALL ═══════════════ */
 function renderAll(){
   updateNavBadges();
-  renderDashboard();
   renderDay();
   renderWeek();
   renderTasks();
@@ -1706,7 +1688,25 @@ function kpiCard(lbl,val,ico,accent,meta){
     +(meta?'<div class="k-meta">'+meta+'</div>':'')+'</div>';
 }
 
-/* ═══════════════ ANALYTICS (#6) ═══════════════ */
+/* ═══════════════ ANALYTICS (gộp Dashboard + Thống kê sâu) ═══════════════ */
+function anRowsInRange(){
+  var rows = visibleRows();
+  var from = $("an-from").value, to = $("an-to").value;
+  var f = from ? new Date(from) : null, t = to ? new Date(to) : null;
+  if(f) f.setHours(0,0,0,0);
+  if(t) t.setHours(23,59,59,999);
+  return rows.filter(function(r){
+    var d = parseDMY(r.startDate);
+    if(!d) return false;
+    if(f && d < f) return false;
+    if(t && d > t) return false;
+    return true;
+  });
+}
+function isVisitingTask(r){ return /sale\s*-?\s*hospital/i.test(r.typeTask); }
+function isOfficeTask(r){ return accShort(r.account).toUpperCase()==="MMH"; }
+function isDistributorTask(r){ return /distributor/i.test(r.typeTask); }
+
 function anQuick(n){
   var to=new Date(); to.setHours(0,0,0,0);
   var from=new Date(to); from.setDate(to.getDate()-(n-1));
@@ -1714,32 +1714,147 @@ function anQuick(n){
   loadAnalytics();
 }
 function loadAnalytics(){
-  var from=$("an-from").value, to=$("an-to").value;
-  if(!from||!to){ anQuick(30); return; }
-  var extra={ from:dmy(new Date(from)), to:dmy(new Date(to)) };
-  if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
-  $("an-kpis").innerHTML='<div class="kpi"><div class="k-lbl">Đang tải…</div><div class="k-val">…</div></div>';
-  apiGet("dashboard",extra).then(function(d){ renderAnalytics(d); })
-    .catch(function(e){ showToast("⚠️ "+e.message); });
-}
-function renderAnalytics(d){
+  if(!$("an-from").value || !$("an-to").value){ anQuick(30); return; }
+  var rows = anRowsInRange();
+  var accSet={}, visitByAcc={};
+  rows.forEach(function(r){
+    var a=accShort(r.account);
+    if(a && a.toUpperCase()!=="MMH"){
+      accSet[a]=1;
+      if(isVisitingTask(r)){ visitByAcc[a]=(visitByAcc[a]||0)+1; }
+    }
+  });
+  var totalTask = rows.length;
+  var totalVisiting = rows.filter(isVisitingTask).length;
+  var uniqueAcc = Object.keys(accSet).length;
+  var officeRows = rows.filter(isOfficeTask);
+  var distRows = rows.filter(isDistributorTask);
+  var visitedAccCount = Object.keys(visitByAcc).length;
+  var revisitRatio = visitedAccCount ? (totalVisiting/visitedAccCount) : 0;
+
   $("an-kpis").innerHTML=
-     kpiCard("Tổng task",d.totalTasks,"📋",true,"trong khoảng đã chọn")
-    +kpiCard("Khách unique",d.uniqueCustomers,"🏥",false,"account khác MMH")
-    +kpiCard("TB lượt/khách",d.avgVisitsPerCustomer,"🔁",false,"số lần chăm trung bình")
-    +kpiCard("Tỉ lệ chăm lại",d.revisitRate+"%","💫",false,d.revisitedAccounts+" khách ≥2 lần")
-    +kpiCard("Visiting",d.visiting,"🚗",false,"lượt đi thực địa")
-    +kpiCard("Tại MMH",d.atCompany,"🏢",false,"task nội bộ")
-    +kpiCard("Với distributor",d.withDistributor,"🤝",false,"làm việc NPP")
-    +kpiCard("Tổng lượt thăm",d.totalVisits,"📈",false,"gồm chăm lại");
-  bars($("an-chart-custtype"),d.byCustomerType||{},{cls:"green"});
-  bars($("an-chart-action"),d.byTypeAction||{});
-  bars($("an-chart-sp"),d.bySalesProcess||{});
-  bars($("an-chart-pg"),d.byProductGroup||{},{cls:"green"});
-  bars($("an-chart-fb"),d.byFeedback||{},{cls:"gold"});
-  bars($("an-chart-na"),d.byNextAction||{});
-  bars($("an-chart-tt"),d.byTypeTask||{});
-  bars($("an-chart-status"),d.byStatus||{});
+     kpiCardClick("Tổng task",totalTask,"📋",true,"trong khoảng đã chọn",null)
+    +kpiCardClick("Visiting (Sale-Hospital)",totalVisiting,"🚗",false,'TB <b>'+(revisitRatio.toFixed(1))+'</b> lượt/khách',"isVisitingTask")
+    +kpiCardClick("Unique account",uniqueAcc,"🏥",false,visitedAccCount+" khách được thăm",null)
+    +kpiCardClick("Tại MMH (Office)",officeRows.length,"🏢",false,"task nội bộ","isOfficeTask")
+    +kpiCardClick("Với Distributor",distRows.length,"🤝",false,"Sale-Distributor","isDistributorTask");
+
+  clickBars($("an-chart-sp"),  rows, function(r){return r.salesProcess;},  "salesProcess");
+  clickBars($("an-chart-pg"),  rows, function(r){return r.productGroup;},  "productGroup",{cls:"green"});
+  clickBars($("an-chart-fb"),  rows, function(r){return r.feedback;},      "feedback",{cls:"gold"});
+  clickBars($("an-chart-na"),  rows, function(r){return r.nextAction;},    "nextAction");
+  clickBars($("an-chart-action"),rows,function(r){return r.typeAction;},   "typeAction");
+  clickBars($("an-chart-tt"),  rows, function(r){return r.typeTask;},      "typeTask");
+  clickBars($("an-chart-status"),rows,function(r){return r.taskStatus;},   "taskStatus");
+  clickBars($("an-chart-custtype"),rows.filter(function(r){return !isOfficeTask(r)&&accShort(r.account);}),
+            function(r){return classifyAccountJs(r.account);}, "__custtype",{cls:"green",uniqueAcc:true});
+}
+
+function classifyAccountJs(name){
+  var n=String(name||"").trim();
+  if(!n) return "Khác";
+  if(/^mmh$/i.test(accShort(n))) return "Nội bộ (MMH)";
+  if(/b[ệe]nh vi[ệe]n|hospital|\bBV\b/i.test(n)) return "Bệnh viện";
+  if(/ph[òo]ng kh[áa]m|clinic|pkdk|pk\b/i.test(n)) return "Phòng khám";
+  if(/đ[ạa]i h[ọo]c|university|vi[ệe]n\b|institute|tr[ưuư][ờo]ng/i.test(n)) return "Đại học/Viện";
+  if(/distributor|nph|nh[àa] ph[âa]n ph[ốo]i|c[ôo]ng ty|company|co\.|ltd|jsc/i.test(n)) return "Nhà phân phối";
+  return "Khác";
+}
+
+function kpiCardClick(lbl,val,ico,accent,meta,fnName){
+  var onclick = fnName ? ' onclick="drillKpi(\''+jsq(fnName)+'\',\''+jsq(lbl)+'\')" style="cursor:pointer"' : '';
+  return '<div class="kpi'+(accent?" accent":"")+'"'+onclick+'><div class="k-ico">'+ico+'</div>'
+    +'<div class="k-lbl">'+esc(lbl)+'</div><div class="k-val">'+val+'</div>'
+    +(meta?'<div class="k-meta">'+meta+'</div>':'')+'</div>';
+}
+
+function clickBars(container,rows,keyFn,field,opt){
+  opt=opt||{};
+  var m={};
+  rows.forEach(function(r){ var k=keyFn(r)||"(trống)"; if(opt.uniqueAcc){ (m[k]=m[k]||{}); m[k][accShort(r.account)]=1; } else { m[k]=(m[k]||0)+1; } });
+  var entries=Object.keys(m).map(function(k){ return [k, opt.uniqueAcc? Object.keys(m[k]).length : m[k]]; }).filter(function(e){return e[1]>0;});
+  entries.sort(function(a,b){return b[1]-a[1];});
+  if(!entries.length){ container.innerHTML='<p style="color:var(--sub);font-size:13px;text-align:center;padding:14px">Chưa có dữ liệu</p>'; return; }
+  var max=Math.max.apply(null,entries.map(function(e){return e[1];}));
+  container.innerHTML=entries.map(function(e){
+    var pct=max?Math.round(e[1]/max*100):0;
+    var clickable = (field && field!=="__custtype");
+    var onclick = clickable ? ' onclick="drillChart(\''+jsq(field)+'\',\''+jsq(e[0])+'\')" style="cursor:pointer"' : '';
+    return '<div class="prog-item"'+onclick+'><div class="prog-top"><span class="prog-name">'+esc(e[0])
+      +(clickable?' <span style="color:var(--mmh-blue);font-size:10px">▸</span>':'')+'</span><span class="prog-val">'+e[1]+'</span></div>'
+      +'<div class="prog-bar"><div class="prog-fill'+(opt.cls?" "+opt.cls:"")+'" style="width:'+pct+'%"></div></div></div>';
+  }).join("");
+}
+
+function drillChart(field,value){
+  var rows=anRowsInRange().filter(function(r){
+    var v=(r[field]||"(trống)"); return v===value || (value==="(trống)" && !String(r[field]||"").trim());
+  });
+  openDrillDrawer("📊 "+field+" = "+value, rows, field+"_"+value);
+}
+function drillKpi(fnName,label){
+  var fn=window[fnName];
+  var rows= fn? anRowsInRange().filter(fn) : anRowsInRange();
+  openDrillDrawer("📊 "+label, rows, label);
+}
+
+function openDrillDrawer(title,rows,exportTag){
+  S._drill={rows:rows,tag:exportTag||title};
+  var head='<div class="dr-head"><div class="dh-ico">📋</div><div class="dh-body">'
+    +'<div class="dh-acc">'+esc(title)+'</div><div class="dh-meta">'+rows.length+' task'
+    +' · '+($("an-from").value||"")+' → '+($("an-to").value||"")+'</div></div>'
+    +'<button class="dh-close" onclick="closeDrawer()">✕</button></div>';
+  var exp='<div style="padding:14px 24px 0"><button class="tb-btn primary" style="width:100%;justify-content:center" onclick="exportDrillExcel()">'
+    +'<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
+    +'Tải Excel ('+rows.length+' task)</button></div>';
+  var body='<div class="dr-body" style="padding-top:14px">';
+  if(!rows.length){ body+='<div class="empty-state"><div class="es-icon">📭</div><p>Không có task</p></div>'; }
+  else {
+    body+=rows.map(function(r){
+      return '<div class="mc" style="margin-bottom:9px" onclick="closeDrawer();setTimeout(function(){openDrawer('+r.r+')},300)">'
+        +'<div class="mc-tone rt-'+cardTone(r)+'"></div><div class="mc-body">'
+        +'<div class="mc-top"><div class="mc-acc">'+esc(accShort(r.account))+'</div><div class="mc-date">'+esc(r.startDate||"")+'</div></div>'
+        +'<div class="mc-meta">'+(r.productGroup?'<span class="badge '+(PG_BADGE[r.productGroup]||"badge-gray")+'">'+(PG_ICON[r.productGroup]||"")+' '+esc(r.productGroup)+'</span>':'')
+        +statusBadge(r.taskStatus)+(r.pic?'<span class="badge badge-gray">'+esc(r.pic)+'</span>':'')+'</div>'
+        +(r.taskResult?'<div class="mc-sub">'+esc(r.taskResult.slice(0,90))+(r.taskResult.length>90?"…":"")+'</div>':'')
+        +'</div></div>';
+    }).join("");
+  }
+  body+='</div>';
+  $("drawer-content").innerHTML=head+exp+body;
+  $("drawer-bg").classList.add("show"); $("drawer").classList.add("show");
+  document.body.style.overflow="hidden";
+}
+
+function exportDrillExcel(){
+  var rows=(S._drill&&S._drill.rows)||[];
+  if(!rows.length){ showToast("Không có dữ liệu để xuất"); return; }
+  ensureXLSX(function(XLSX){
+    var aoa=[["No","Ngày","FY","PIC","Địa bàn","Nhóm SP","Type Task","Type Action","Sales Process","Kết quả","Trạng thái","Phản hồi","Next Action","Ảnh (URL)"]];
+    rows.forEach(function(r){
+      aoa.push([r.no,r.startDate,r.fy,r.pic,r.account,r.productGroup,r.typeTask,r.typeAction,r.salesProcess,
+        r.taskResult,r.taskStatus,r.feedback,r.nextAction,(photoUrls(r).join(" "))]);
+    });
+    var ws=XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols']=[{wch:6},{wch:12},{wch:8},{wch:12},{wch:30},{wch:16},{wch:16},{wch:14},{wch:14},{wch:40},{wch:12},{wch:12},{wch:18},{wch:40}];
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,"Tasks");
+    var name="MMH_Drilldown_"+sanitizeTag(S._drill.tag)+"_"+ymd(new Date())+".xlsx";
+    XLSX.writeFile(wb,name);
+    showToast("✓ Đã tải "+name);
+  });
+}
+function sanitizeTag(s){ return String(s||"export").replace(/[^\w\u00C0-\u1EF9]+/g,"_").slice(0,40); }
+var _xlsxLoaded=null;
+function ensureXLSX(cb){
+  if(window.XLSX){ cb(window.XLSX); return; }
+  if(_xlsxLoaded){ _xlsxLoaded.push(cb); return; }
+  _xlsxLoaded=[cb];
+  var s=document.createElement("script");
+  s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+  s.onload=function(){ var q=_xlsxLoaded; _xlsxLoaded=null; q.forEach(function(fn){fn(window.XLSX);}); };
+  s.onerror=function(){ _xlsxLoaded=null; showToast("⚠️ Không tải được thư viện Excel"); };
+  document.body.appendChild(s);
 }
 
 /* ═══════════════ DAY VIEW ═══════════════ */
@@ -1876,66 +1991,89 @@ function renderTerritory(){
   }).join("");
 }
 
-/* ═══════════════ ACCOUNT HISTORY (#7) ═══════════════ */
+/* ═══════════════ TERRITORY DRAWER (giống ảnh 5) ═══════════════ */
 function openAccount(name){
-  switchView("account");
-  var body=$("account-body");
-  body.innerHTML='<div class="empty-state"><div class="spinner"></div><p>Đang tải lịch sử "'+esc(name)+'"…</p></div>';
+  var loading='<div class="dr-head"><div class="dh-ico">🏥</div><div class="dh-body">'
+    +'<div class="dh-acc">'+esc(name)+'</div><div class="dh-meta">Đang tải lịch sử…</div></div>'
+    +'<button class="dh-close" onclick="closeDrawer()">✕</button></div>'
+    +'<div class="dr-body"><div class="empty-state"><div class="spinner"></div><p>Đang tải dữ liệu địa bàn…</p></div></div>';
+  $("drawer-content").innerHTML=loading;
+  $("drawer-bg").classList.add("show"); $("drawer").classList.add("show");
+  document.body.style.overflow="hidden";
+
   var extra={account:name};
   if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
-  apiGet("accountHistory",extra).then(function(d){ renderAccountHistory(d); })
-    .catch(function(e){ body.innerHTML='<div class="empty-state"><div class="es-icon">⚠️</div><p>'+esc(e.message)+'</p></div>'; });
+  var pHist=apiGet("accountHistory",extra);
+  var pStake=apiGet("cbcList",{account:name}).catch(function(){return {rows:[]};});
+  Promise.all([pHist,pStake]).then(function(res){
+    renderTerritoryDrawer(res[0], (res[1]&&res[1].rows)||[]);
+  }).catch(function(e){
+    $("drawer-content").innerHTML=loading.replace("Đang tải dữ liệu địa bàn…","⚠️ "+esc(e.message));
+  });
 }
-function renderAccountHistory(d){
-  var body=$("account-body");
+
+function renderTerritoryDrawer(d, stakeholders){
   var lv=d.lastVisit;
-  var html='';
-  html+='<div class="kpi-row">'
-    +kpiCard("Tổng task",d.totalTasks,"📋",true,esc(d.customerType))
-    +kpiCard("Lượt visiting",d.visitCount,"🚗",false,"")
-    +kpiCard("Số ảnh",d.photoCount,"📷",false,"")
-    +kpiCard("Gần nhất",lv?esc((lv.startDate||"").slice(0,5)):"—","📅",false,lv?esc(lv.pic):"")
-    +'</div>';
-  // header
-  html+='<div class="panel"><div class="panel-head"><h3>🏥 '+esc(d.account)+'</h3><span class="ph-sub">'+esc(d.customerType)+'</span></div>';
+  var sCount=(stakeholders||[]).length;
+  var head='<div class="dr-head"><div class="dh-ico">🏥</div><div class="dh-body">'
+    +'<div class="dh-acc">'+esc(d.accountShort||d.account)+'</div>'
+    +'<div class="dh-meta">'+esc(d.customerType||"")+(d.account!==d.accountShort?' · '+esc(d.account):'')+'</div>'
+    +'</div><button class="dh-close" onclick="closeDrawer()">✕</button></div>';
+  var body='<div class="dr-body">';
   if(lv){
-    html+='<div class="panel-body" style="border-bottom:1px solid var(--border)">'
-      +'<div class="dr-sec-title">Lần gặp gần nhất</div>'
-      +'<div class="dr-plan"><b>'+esc(lv.startDate)+'</b> · '+esc(lv.pic)
+    body+='<div class="dr-sec"><div class="dr-sec-title">🕑 Latest update</div>'
+      +'<div class="dr-plan"><b>'+esc(lv.startDate||"")+'</b> · '+esc(lv.pic||"")
       +(lv.salesProcess?' · '+esc(lv.salesProcess):'')+(lv.typeAction?' · '+esc(lv.typeAction):'')
       +'<div style="margin-top:8px">'+esc(lv.taskResult||"(chưa có kết quả ghi nhận)")+'</div>'
       +'<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">'
       +(lv.feedback?'<span class="badge badge-gray">'+(FB_ICON[lv.feedback]||"")+' '+esc(lv.feedback)+'</span>':'')
-      +(lv.nextAction?'<span class="badge badge-blue">➡ '+esc(lv.nextAction)+'</span>':'')
+      +(lv.nextAction?'<span class="badge badge-orange">➡ '+esc(lv.nextAction)+'</span>':'')
       +(lv.taskStatus?statusBadge(lv.taskStatus):'')+'</div></div></div>';
   }
-  html+='</div>';
-  // ảnh
+  body+='<div class="kpi-row" style="grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">'
+    +kpiCard("Tổng task",d.totalTasks,"📋",true,"")
+    +kpiCard("Lượt visiting",d.visitCount,"🚗",false,"")
+    +kpiCard("Key stakeholder",sCount,"👥",false,"trong CBC")
+    +kpiCard("Số ảnh",d.photoCount,"📷",false,"")
+    +'</div>';
+  body+='<div class="dr-sec"><div class="dr-sec-title">👥 Key stakeholder ('+sCount+')</div>';
+  if(sCount){
+    body+=stakeholders.map(function(s){
+      var inf=scaleNum(s.influence), tru=scaleNum(s.trust);
+      return '<div class="stake-opt" style="cursor:default;margin-bottom:8px">'
+        +'<div class="so-av">'+esc(initials(s.stakeholder||"?"))+'</div>'
+        +'<div class="so-info"><div class="so-name">'+esc(s.stakeholder||"(chưa có tên)")+'</div>'
+        +'<div class="so-detail">'+esc([s.jobTitle,s.specialize].filter(Boolean).join(" · ")||"—")+(s.phone?' · 📞 '+esc(s.phone):'')+'</div>'
+        +'<div class="so-scales"><span class="stake-chip inf">Influence '+inf+'</span><span class="stake-chip tru">Trust '+tru+'</span>'
+        +(s.role?'<span class="stake-chip" style="background:var(--mmh-navy);color:var(--mmh-yellow)">'+esc(s.role)+'</span>':'')+'</div></div></div>';
+    }).join("");
+  } else {
+    body+='<p style="font-size:12.5px;color:var(--sub);padding:4px 0">Chưa có key stakeholder. Thêm ở tab Key Stakeholder.</p>';
+  }
+  body+='</div>';
   if(d.photos&&d.photos.length){
-    html+='<div class="panel"><div class="panel-head"><h3>📷 Ảnh địa bàn</h3><span class="ph-sub">'+d.photos.length+' ảnh</span></div>'
-      +'<div class="panel-body"><div class="gal-grid">'
-      +d.photos.map(function(p){
+    body+='<div class="dr-sec"><div class="dr-sec-title">📷 Ảnh địa bàn ('+d.photos.length+')</div>'
+      +'<div class="gal-grid" style="grid-template-columns:repeat(auto-fill,minmax(120px,1fr))">'
+      +d.photos.slice(0,12).map(function(p){
         return '<div class="gal-item" onclick="openLightbox(\''+jsq(thumbOf(p.url))+'\',\''+jsq(p.url)+'\',\''+jsq((p.pic||"")+" · "+(p.date||""))+'\')">'
           +'<div class="gi-img"><img src="'+esc(thumbOf(p.url))+'" loading="lazy" onerror="this.parentNode.parentNode.style.display=\'none\'"/></div>'
           +'<div class="gi-meta"><div class="gi-date">'+esc(p.date||"")+'</div><div class="gi-pic">'+esc(p.pic||"")+'</div></div></div>';
-      }).join("")
-      +'</div></div></div>';
+      }).join("")+'</div></div>';
   }
-  // lịch sử (kế hoạch → kết quả)
-  html+='<div class="panel"><div class="panel-head"><h3>📜 Lịch sử đi địa bàn</h3><span class="ph-sub">'+d.history.length+' lần</span></div>'
-    +'<div class="panel-body flush"><div class="tbl-wrap"><table class="dt"><thead><tr>'
-    +'<th style="width:96px">Ngày</th><th>PIC</th><th>Kế hoạch (Process·Action·SP)</th><th>Kết quả</th><th style="width:96px">Trạng thái</th><th>Phản hồi/Next</th></tr></thead><tbody>';
-  d.history.forEach(function(r){
+  body+='<div class="dr-sec"><div class="dr-sec-title">📜 Lịch sử đi địa bàn ('+(d.history?d.history.length:0)+')</div>';
+  (d.history||[]).slice(0,20).forEach(function(r){
     var plan=[r.salesProcess,r.typeAction,r.productGroup].filter(Boolean).join(" · ")||"—";
-    html+='<tr onclick="openDrawer('+r.r+')"><td class="td-date">'+esc(r.startDate||"")+'</td>'
-      +'<td><span class="pic-tag"><span class="pt-av">'+esc(initials(r.pic))+'</span>'+esc(r.pic)+'</span></td>'
-      +'<td style="font-size:12px">'+esc(plan)+'</td>'
-      +'<td style="font-size:12px">'+esc(r.taskResult||"—")+'</td>'
-      +'<td>'+statusBadge(r.taskStatus)+'</td>'
-      +'<td>'+[r.feedback?((FB_ICON[r.feedback]||"")+" "+r.feedback):"",r.nextAction].filter(Boolean).map(esc).join("<br>")+'</td></tr>';
+    body+='<div class="mc" style="margin-bottom:8px" onclick="closeDrawer();setTimeout(function(){openDrawer('+r.r+')},300)">'
+      +'<div class="mc-tone rt-'+cardTone(r)+'"></div><div class="mc-body">'
+      +'<div class="mc-top"><div class="mc-acc">'+esc(r.pic||"")+'</div><div class="mc-date">'+esc(r.startDate||"")+'</div></div>'
+      +'<div class="mc-sub" style="margin-top:3px">'+esc(plan)+'</div>'
+      +(r.taskResult?'<div class="mc-sub" style="color:var(--text)">'+esc(r.taskResult.slice(0,90))+(r.taskResult.length>90?"…":"")+'</div>':'')
+      +'<div class="mc-meta" style="margin-top:5px">'+statusBadge(r.taskStatus)
+      +(r.feedback?'<span class="badge badge-gray">'+(FB_ICON[r.feedback]||"")+' '+esc(r.feedback)+'</span>':'')+'</div>'
+      +'</div></div>';
   });
-  html+='</tbody></table></div></div></div>';
-  body.innerHTML=html;
+  body+='</div></div>';
+  $("drawer-content").innerHTML=head+body;
 }
 
 /* ═══════════════ DRAWER (#5 + #8) ═══════════════ */
