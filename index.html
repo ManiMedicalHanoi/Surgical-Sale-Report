@@ -1085,7 +1085,7 @@ table.dt .td-pic{white-space:nowrap}
       </div>
       <div class="mf-grid">
         <div class="mf"><label>Khu vực</label><select id="cbc-area"></select></div>
-        <div class="mf"><label>Tỉnh / Thành</label><input type="text" id="cbc-province" placeholder="VD: Ha Noi"/></div>
+        <div class="mf"><label>Tỉnh / Thành</label><input type="text" id="cbc-province" list="province-list" placeholder="Gõ để tìm tỉnh/thành…"/><datalist id="province-list"></datalist></div>
       </div>
       <div class="mf"><label>Địa chỉ</label><input type="text" id="cbc-address" placeholder="Địa chỉ bệnh viện"/></div>
       <hr style="border:0;border-top:1px solid var(--border);margin:6px 0 16px"/>
@@ -1102,7 +1102,7 @@ table.dt .td-pic{white-space:nowrap}
         <div class="mf"><label>Influence (mức ảnh hưởng)</label><select id="cbc-influence"></select></div>
         <div class="mf"><label>Trust (độ tin tưởng Mani)</label><select id="cbc-trust"></select></div>
       </div>
-      <div class="mf"><label>What drives them? (Challenges & Ambitions)</label><textarea id="cbc-drivers" placeholder="Động lực, thách thức, mục tiêu của họ…"></textarea></div>
+      <div class="mf"><label>What drives them? (Challenges & Ambitions)</label><select id="cbc-drivers"></select></div>
     </div>
     <div class="modal-foot">
       <button class="btn-ghost" onclick="closeModal('cbc-modal')">Huỷ</button>
@@ -1427,6 +1427,9 @@ function initUI(){
     });
   }
   renderAll();
+  // YC#1: luôn mở vào "Hôm nay" của PIC hiện tại (cả desktop & mobile)
+  S.view = "today";
+  switchView("today");
   // warm-up GPS permission (không chặn UI)
   try{ getGps(); }catch(e){}
 }
@@ -1912,7 +1915,9 @@ function drawerHTML(r){
     +'<div><span class="f-lbl">Ngày</span><input type="text" id="dr-date" value="'+esc(r.startDate)+'" onchange="markDirty(\'startDate\',this.value)" placeholder="dd/mm/yyyy"/></div>'
     +'</div></div>';
   if(r.nextAction==="Dừng lại"||r.stopReason){
-    data+='<div class="dr-sec"><span class="f-lbl">Lý do dừng</span><textarea id="dr-stop" oninput="markDirty(\'stopReason\',this.value)" style="min-height:60px" placeholder="Lý do dừng theo đuổi…">'+esc(r.stopReason)+'</textarea></div>';
+    data+='<div class="dr-sec" id="dr-stop-sec"><div class="dr-sec-title">Lý do dừng chăm sóc '
+      +'<button class="voice-btn" onclick="toggleVoice(\'dr-stop\',this);return false">🎤 Nói</button></div>'
+      +'<textarea id="dr-stop" oninput="markDirty(\'stopReason\',this.value)" style="min-height:60px" placeholder="Lý do dừng theo đuổi…">'+esc(r.stopReason)+'</textarea></div>';
   }
   data+='</div>';
   // ── phần ảnh (cột phải) — ẩn nếu MMH (#5) ──
@@ -1945,9 +1950,69 @@ function drawerHTML(r){
     +'<div class="dr-body">'+split+'</div>'
     +'<div class="dr-foot"><button class="save-btn" id="dr-save" onclick="saveTask()">💾 Cập nhật & ghi vào Sheet</button></div>';
 }
-function markDirty(field,val){ S.dirty[field]=val; var btn=$("dr-save"); if(btn) btn.classList.add("dirty"); }
+function markDirty(field,val){
+  S.dirty[field]=val;
+  var btn=$("dr-save"); if(btn) btn.classList.add("dirty");
+  // xoá viền cảnh báo đỏ khi user đã nhập
+  var map={taskStatus:"dr-status",feedback:"dr-fb",nextAction:"dr-na",productGroup:"dr-pg",stopReason:"dr-stop"};
+  if(map[field]){ var el=$(map[field]); if(el&&String(val||"").trim()) el.style.borderColor=""; }
+  // YC#3.3: bật/tắt khung Lý do dừng theo Next action
+  if(field==="nextAction") toggleStopReason(val==="Dừng lại");
+}
+
+function toggleStopReason(show){
+  var existing=$("dr-stop-sec");
+  if(show){
+    if(existing) return;
+    var pane=document.querySelector(".dr-data") || document.querySelector(".dr-data-only");
+    if(!pane) return;
+    var sec=document.createElement("div");
+    sec.className="dr-sec"; sec.id="dr-stop-sec";
+    sec.innerHTML='<div class="dr-sec-title">Lý do dừng chăm sóc '
+      +'<button class="voice-btn" onclick="toggleVoice(\'dr-stop\',this);return false">🎤 Nói</button></div>'
+      +'<textarea id="dr-stop" oninput="markDirty(\'stopReason\',this.value)" style="min-height:80px" placeholder="Vì sao dừng theo đuổi account này…"></textarea>';
+    pane.appendChild(sec);
+    $("dr-stop").focus();
+  } else {
+    if(existing) existing.remove();
+    delete S.dirty.stopReason;
+  }
+}
 function saveTask(){
   var btn=$("dr-save");
+
+  // lấy giá trị hiện tại của 1 field (ưu tiên S.dirty, fallback giá trị đang chọn trong DOM)
+  function cur(id,field){
+    if(field in S.dirty) return S.dirty[field];
+    var el=$(id); return el? el.value : "";
+  }
+
+  // YC#3.2: bắt buộc 4 trường chính
+  var required=[
+    ["dr-status","taskStatus","Trạng thái"],
+    ["dr-fb","feedback","Phản hồi"],
+    ["dr-na","nextAction","Next action"],
+    ["dr-pg","productGroup","Nhóm sản phẩm"],
+  ];
+  var missing=required.filter(function(x){ return !String(cur(x[0],x[1])||"").trim(); });
+  if(missing.length){
+    showToast("⚠️ Vui lòng cập nhật: "+missing.map(function(x){return x[2];}).join(", "));
+    missing.forEach(function(x){ var el=$(x[0]); if(el) el.style.borderColor="var(--danger)"; });
+    var firstEl=$(missing[0][0]); if(firstEl) firstEl.focus();
+    return;
+  }
+
+  // YC#3.3: nếu Next action = "Dừng lại" thì bắt buộc nhập Lý do dừng
+  if(String(cur("dr-na","nextAction"))==="Dừng lại"){
+    var stopEl=$("dr-stop");
+    var stopVal=("stopReason" in S.dirty)? S.dirty.stopReason : (stopEl? stopEl.value : "");
+    if(!String(stopVal||"").trim()){
+      showToast("⚠️ Vui lòng nhập Lý do dừng chăm sóc");
+      if(stopEl){ stopEl.style.borderColor="var(--danger)"; stopEl.focus(); }
+      return;
+    }
+  }
+
   var hasData=Object.keys(S.dirty).length>0;
   var hasPending=S.pending.length>0;
   if(!hasData&&!hasPending){ showToast("Chưa có thay đổi nào"); return; }
@@ -2061,28 +2126,38 @@ function confirmPending(silent){
   if(!S.pending.length) return Promise.resolve();
   var queue=S.pending.slice();
   if(!silent) overlay(true,"Đang tải ảnh","Upload "+queue.length+" ảnh kèm vị trí…");
-  var done=0;
+  var done=0, uploaded=[];   // YC#3.1: giữ lại ảnh đã upload để hiện ngay
   function next(){
     if(!queue.length) return Promise.resolve();
     var p=queue.shift();
     var b64=String(p.dataUrl).split(",")[1];
     var body={ action:"upload", rowIndex:S.drawerRow, base64:b64, mimeType:p.mime };
     if(p.gps){ body.lat=p.gps.lat; body.lng=p.gps.lng; body.acc=p.gps.acc; }
-    return apiPost(body).then(function(){
+    return apiPost(body).then(function(res){
       done++;
+      if(res&&(res.thumbUrl||res.viewUrl)) uploaded.push({thumb:res.thumbUrl||res.viewUrl, view:res.viewUrl||res.thumbUrl});
       if(!silent) overlay(true,"Đang tải ảnh","Đã gửi "+done+"/"+(done+queue.length)+" ảnh…");
       return next();
     });
   }
   return next().then(function(){
     S.pending=[];
+    // YC#3.1: chèn ngay thumbnail vào dải ảnh để PIC thấy ảnh đã lên
+    var strip=$("dr-photo-strip");
+    if(strip && uploaded.length){
+      var ph=strip.querySelector("div"); if(ph) ph.remove();   // bỏ dòng "chưa có ảnh"
+      uploaded.forEach(function(u){
+        var img=document.createElement("img");
+        img.className="photo-thumb"; img.src=u.thumb; img.loading="lazy";
+        img.onclick=(function(uu){ return function(){ openLightbox(uu.thumb, uu.view, "Ảnh vừa tải lên"); }; })(u);
+        strip.appendChild(img);
+      });
+    }
+    renderPending();   // xoá khu vực chờ
     if(!silent){
       overlay(false);
-      showToast("✓ Đã gửi "+done+" ảnh");
-      // refresh ảnh trong drawer
-      refreshData(false);
-      var r=S.rows.filter(function(x){return x.r===S.drawerRow;})[0];
-      if(r&&$("drawer").classList.contains("show")) $("drawer-content").innerHTML=drawerHTML(r);
+      showToast("✓ Đã gửi "+done+" ảnh — đã hiển thị bên cạnh");
+      refreshData(false);   // đồng bộ ngầm
     }
     return true;
   });
@@ -2489,6 +2564,11 @@ function fillCbcDropdowns(){
   fill("cbc-type",L.accountTypes,"—"); fill("cbc-sector",L.sectors,"—"); fill("cbc-area",L.areas,"—");
   fill("cbc-spec",L.specialize,"—"); fill("cbc-job",L.jobTitles,"—"); fill("cbc-role",L.roles,"—");
   fill("cbc-influence",L.influence,"—"); fill("cbc-trust",L.trust,"—");
+  // YC#2: drivers thành dropdown (Hình 3)
+  fill("cbc-drivers",L.drivers,"— chọn —");
+  // YC#2: province gõ-lọc bằng datalist (~9000 dòng từ Master name R2:R9042)
+  var pl=$("province-list");
+  if(pl) pl.innerHTML=(L.provinces||[]).map(function(p){return '<option value="'+esc(p)+'">';}).join("");
 }
 function fillCbcFilters(){
   var types={}, areas={};
@@ -2539,8 +2619,8 @@ function cbcCard(r){
 function openCbcModal(){
   $("cbc-modal-title").textContent="👤 Thêm key stakeholder";
   $("cbc-row").value="";
-  ["cbc-account","cbc-province","cbc-address","cbc-name","cbc-phone","cbc-drivers"].forEach(function(id){$(id).value="";});
-  ["cbc-type","cbc-sector","cbc-area","cbc-spec","cbc-job","cbc-role","cbc-influence","cbc-trust"].forEach(function(id){var el=$(id);if(el)el.selectedIndex=0;});
+  ["cbc-account","cbc-province","cbc-address","cbc-name","cbc-phone"].forEach(function(id){$(id).value="";});
+  ["cbc-type","cbc-sector","cbc-area","cbc-spec","cbc-job","cbc-role","cbc-influence","cbc-trust","cbc-drivers"].forEach(function(id){var el=$(id);if(el)el.selectedIndex=0;});
   $("cbc-modal").classList.add("show");
 }
 function openCbcEdit(rowIndex){
@@ -2549,7 +2629,8 @@ function openCbcEdit(rowIndex){
   $("cbc-row").value=rowIndex;
   $("cbc-account").value=r.account||""; $("cbc-province").value=r.province||"";
   $("cbc-address").value=r.address||""; $("cbc-name").value=r.stakeholder||"";
-  $("cbc-phone").value=r.phone||""; $("cbc-drivers").value=r.drivers||"";
+  $("cbc-phone").value=r.phone||"";
+  setSel("cbc-drivers",r.drivers);   // YC#2: drivers giờ là select
   setSel("cbc-type",r.accountType); setSel("cbc-sector",r.sector); setSel("cbc-area",r.area);
   setSel("cbc-spec",r.specialize); setSel("cbc-job",r.jobTitle); setSel("cbc-role",r.role);
   setSel("cbc-influence",r.influence); setSel("cbc-trust",r.trust);
