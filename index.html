@@ -998,7 +998,7 @@ table.dt .td-pic{white-space:nowrap}
         <div class="mf"><label>Nhóm sản phẩm</label><select id="nt-pg"></select></div>
       </div>
       <div class="mf"><label>Địa bàn / Account</label>
-        <input type="text" id="nt-account" list="acc-list" placeholder="Gõ để tìm bệnh viện / account…"/>
+        <input type="text" id="nt-account" list="acc-list" placeholder="Gõ để tìm bệnh viện / account…" onchange="autofillByAccount()" oninput="autofillByAccount()"/>
         <datalist id="acc-list"></datalist></div>
       <div class="mf-grid">
         <div class="mf"><label>Type task</label><select id="nt-tt"></select></div>
@@ -1006,11 +1006,19 @@ table.dt .td-pic{white-space:nowrap}
       </div>
       <div class="mf-grid">
         <div class="mf"><label>Sales process</label><select id="nt-sp"></select></div>
-        <div class="mf"><label>Task status</label><select id="nt-st"></select></div>
+        <div class="mf" id="nt-st-wrap" style="display:none"><label>Task status</label><select id="nt-st"></select></div>
       </div>
-      <div class="mf"><label style="display:flex;justify-content:space-between;align-items:center">Ghi chú / Kế hoạch
+      <div class="mf"><label style="display:flex;justify-content:space-between;align-items:center">Ghi chú / Kết quả
         <span style="display:flex;gap:6px"><button class="voice-btn" type="button" onclick="openStakePicker('nt-result',$('nt-account').value);return false">👤 Người liên hệ</button><button class="voice-btn" id="nt-voice" onclick="toggleVoice('nt-result',this);return false">🎤 Nói</button></span></label>
         <textarea id="nt-result" placeholder="Có thể dùng 🎤 voice-to-text tiếng Việt…"></textarea></div>
+      <div class="mf">
+        <label>Ảnh thực địa (tùy chọn — có ảnh hoặc kết quả → tự chuyển Completed)</label>
+        <div class="media-row" style="margin-bottom:8px">
+          <button class="media-btn" type="button" onclick="$('nt-file-cam').click()"><span class="mb-icon">📷</span>Chụp ảnh</button>
+          <button class="media-btn" type="button" onclick="$('nt-file-pick').click()"><span class="mb-icon">🖼️</span>Chọn ảnh</button>
+        </div>
+        <div id="nt-photo-preview" class="pending-grid"></div>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn-ghost" onclick="closeNewTask()">Huỷ</button>
@@ -1135,6 +1143,8 @@ table.dt .td-pic{white-space:nowrap}
 <input type="file" id="file-camera" accept="image/*" capture="environment" class="hidden" onchange="handleFiles(this.files)"/>
 <input type="file" id="file-pick" accept="image/*" multiple class="hidden" onchange="handleFiles(this.files)"/>
 <input type="file" id="sku-file" accept="image/*" capture="environment" class="hidden" onchange="handleSkuConfirm(this.files)"/>
+<input type="file" id="nt-file-cam" accept="image/*" capture="environment" class="hidden" onchange="handleNtFiles(this.files)"/>
+<input type="file" id="nt-file-pick" accept="image/*" multiple class="hidden" onchange="handleNtFiles(this.files)"/>
 
 <script>
 /* ═══════════════ CONFIG ═══════════════ */
@@ -1160,6 +1170,7 @@ var S = {
   skuConfirm:null,       // {dataUrl, mime} ảnh confirmed email chờ upload
   stakeTargetField:null, // textarea đang chèn stakeholder
   stakeList:[],          // danh sách stakeholder đang hiển thị trong picker
+  ntPhotos:[],           // ảnh chụp ngay trong modal Tạo task
 };
 var PG_BADGE={"Ophthalmic Knife":"badge-blue","Ophthalmic Suture":"badge-teal","Manipler":"badge-orange"};
 var PG_ICON ={"Ophthalmic Knife":"🔪","Ophthalmic Suture":"🧵","Manipler":"📎"};
@@ -2285,24 +2296,118 @@ function fillNewTaskForm(){
   }
   $("acc-list").innerHTML=(S.accounts||[]).map(function(a){return '<option value="'+esc(a)+'">';}).join("");
 }
-function openNewTask(){ $("nt-date").value=ymd(new Date()); $("new-task-modal").classList.add("show"); }
+// chọn option trong <select> theo text gần đúng (không phân biệt hoa/thường, khoảng trắng)
+function pickOptionLike(selId, candidates){
+  var el=$(selId); if(!el) return false;
+  for(var c=0;c<candidates.length;c++){
+    var want=String(candidates[c]).toLowerCase().replace(/[\s\-]+/g,"");
+    for(var i=0;i<el.options.length;i++){
+      var t=String(el.options[i].text||el.options[i].value).toLowerCase().replace(/[\s\-]+/g,"");
+      if(t && (t===want || t.indexOf(want)>=0)){ el.selectedIndex=i; return true; }
+    }
+  }
+  return false;
+}
+// YC#2: tự suy Type task / Type action / Sales process theo Account vừa nhập
+function autofillByAccount(){
+  var acc=($("nt-account").value||"").trim();
+  if(!acc) return;
+  var up=acc.toUpperCase();
+  var isMMHacc = accShort(acc).toUpperCase()==="MMH";
+  var isHospital = /b[ệe]nh vi[ệe]n|hospital|^bv\b|\bbv\b/i.test(acc);
+
+  if(isMMHacc){
+    // MMH: type task để trống tự chọn, action=Document, sales process=Others
+    var tt=$("nt-tt"); if(tt) tt.selectedIndex=0;       // để "— chọn —"
+    pickOptionLike("nt-ta",["Document"]);
+    pickOptionLike("nt-sp",["Others","Other"]);
+  } else if(isHospital){
+    pickOptionLike("nt-tt",["Sale-Hospital","Sale-Public Hospital","Sale-Private Hospital","Hospital"]);
+    pickOptionLike("nt-ta",["Visiting","Visit"]);
+  }
+}
+function openNewTask(){
+  $("nt-date").value=ymd(new Date());
+  S.ntPhotos=[]; var pv=$("nt-photo-preview"); if(pv)pv.innerHTML="";
+  $("new-task-modal").classList.add("show");
+}
 function closeNewTask(){ stopVoice(); $("new-task-modal").classList.remove("show"); }
+
+// YC: xử lý ảnh chụp/chọn ngay trong modal Tạo task
+function handleNtFiles(files){
+  if(!files||!files.length) return;
+  var arr=Array.prototype.slice.call(files);
+  overlay(true,"Đang xử lý ảnh","Nén ảnh & lấy vị trí GPS…");
+  getGps().then(function(gps){
+    return Promise.all(arr.map(function(f){ return compressImage(f).then(function(o){ return {dataUrl:o.dataUrl,mime:o.mime,gps:gps}; }); }));
+  }).then(function(res){
+    res.forEach(function(x){ S.ntPhotos.push(x); });
+    overlay(false); renderNtPhotos();
+    try{$("nt-file-cam").value="";$("nt-file-pick").value="";}catch(e){}
+  }).catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
+}
+function renderNtPhotos(){
+  var pv=$("nt-photo-preview"); if(!pv) return;
+  pv.innerHTML=S.ntPhotos.map(function(p,i){
+    return '<div class="pending-item"><img src="'+p.dataUrl+'"/><button class="pi-x" type="button" onclick="S.ntPhotos.splice('+i+',1);renderNtPhotos()">✕</button>'+(p.gps?'<div class="pi-gps">📍 GPS</div>':'')+'</div>';
+  }).join("");
+}
 function submitNewTask(){
   var acc=$("nt-account").value.trim();
   if(!acc){ showToast("Nhập địa bàn / account"); return; }
+
+  // YC: status auto — nếu đã có kết quả thực địa thì Completed, chưa thì Not Started
+  var resultTxt=$("nt-result").value.trim();
+  // bỏ phần "Người liên hệ:" ra khỏi việc xét "đã có kết quả" (người gặp không tính là kết quả)
+  var realResult=resultTxt.replace(/^Người liên hệ:[^\n]*\n?/,"").trim();
+  var autoStatus = (realResult || S.ntPhotos.length>0) ? "Completed" : "Not Started";
+
   var payload={
     startDate: $("nt-date").value? dmy(new Date($("nt-date").value)) : dmy(new Date()),
     account: acc, productGroup:$("nt-pg").value, typeTask:$("nt-tt").value,
     typeAction:$("nt-ta").value, salesProcess:$("nt-sp").value,
-    taskStatus:$("nt-st").value||"Not Started", taskResult:$("nt-result").value.trim(),
+    taskStatus: autoStatus, taskResult: resultTxt,
   };
   if(S.user&&S.user.role==="admin"&&$("nt-pic").value) payload.pic=$("nt-pic").value;
+
+  // ngày của task vừa tạo → để nhảy về xem ngay
+  var taskDate=$("nt-date").value? new Date($("nt-date").value): new Date();
+
   overlay(true,"Đang tạo task","Ghi vào Google Sheet…");
   apiGet("create",null,payload).then(function(r){
-    overlay(false); closeNewTask();
+    var newRow=r.rowIndex;
+    // YC: upload ảnh đã chụp kèm task vừa tạo (nếu có)
+    if(S.ntPhotos.length && newRow){
+      var q=S.ntPhotos.slice(), i=0;
+      function up(){
+        if(!q.length) return Promise.resolve();
+        var p=q.shift(); i++;
+        overlay(true,"Đang tải ảnh","Ảnh "+i+"/"+(i+q.length)+"…");
+        var body={action:"upload",rowIndex:newRow,base64:String(p.dataUrl).split(",")[1],mimeType:p.mime};
+        if(p.gps){ body.lat=p.gps.lat; body.lng=p.gps.lng; body.acc=p.gps.acc; }
+        return apiPost(body).then(up);
+      }
+      return up().then(function(){ return r; });
+    }
+    return r;
+  }).then(function(r){
+    closeNewTask();
     ["nt-account","nt-result"].forEach(function(id){$(id).value="";});
-    showToast("✓ Đã tạo task #"+(r.no||"")+" cho "+accShort(acc));
-    refreshData(false);
+    S.ntPhotos=[]; var pv=$("nt-photo-preview"); if(pv)pv.innerHTML="";
+    showToast("✓ Đã tạo task cho "+accShort(acc));
+    // YC#1: refresh realtime rồi nhảy về ngày của task vừa tạo
+    var btn=$("btn-refresh"); if(btn)btn.classList.add("spin");
+    var extra={}; if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
+    apiGet("rows",extra).then(function(res){
+      S.rows=res.rows||[];
+      if(res.latestByAccount) S.latestByAccount=res.latestByAccount;
+      overlay(false);
+      S.day=new Date(taskDate); S.day.setHours(0,0,0,0);
+      switchView("today");
+      renderAll();
+      updateStatus(true,S.rows.length+" task");
+    }).catch(function(){ overlay(false); renderAll(); })
+      .finally(function(){ if(btn)btn.classList.remove("spin"); });
   }).catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
 }
 
