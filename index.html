@@ -1281,6 +1281,22 @@ function richText(s){
   t = t.replace(/\r\n|\r|\n/g, "<br>");
   return t;
 }
+/* Tách chuỗi Situation Update dài thành các dòng có cấu trúc (đẹp như trong sheet) */
+function formatSituation(s){
+  var t=String(s==null?"":s);
+  var labels=[
+    "Situation Update","Contact Person","Customer Feedback",
+    "Opportunities","Next Steps","Updated","Objective","Result","Target audience"
+  ];
+  labels.forEach(function(lb){
+    var re=new RegExp("\\s*("+lb.replace(/ /g,"\\s+")+")\\s*[:：]","gi");
+    t=t.replace(re, "\n**"+lb+":** ");
+  });
+  // bullet "–" hoặc "-" giữa câu → xuống dòng có chấm tròn
+  t=t.replace(/\s+[–-]\s+/g, "\n  • ");
+  t=t.replace(/^\n+/,"").trim();
+  return richText(t);
+}
 function statusBadge(st){
   if(/complet/i.test(st)) return '<span class="badge badge-green">✅ '+esc(st)+'</span>';
   if(/progress/i.test(st)) return '<span class="badge badge-blue">⏳ '+esc(st)+'</span>';
@@ -1541,8 +1557,11 @@ function setPicView(p){
   for(var i=0;i<chips.length;i++){
     chips[i].classList.toggle("active", chips[i].getAttribute("data-pic")===p);
   }
-  // xoá toàn bộ cache phụ để ép tải lại đúng PIz đang chọn
+  // xoá toàn bộ cache phụ để ép tải lại đúng PIC đang chọn
   S.gallery=null; S.galSummary=null; S.cbc=null; S.pres=null; S.sku=null; S.monthly=null;
+  if(S._cache){ Object.keys(S._cache).forEach(function(k){
+    if(/^(cbc|pres|sku|kpi|monthly)\|/.test(k)) delete S._cache[k];
+  }); }
   renderAll();   // task/dashboard/today/week/territory lọc client-side qua visibleRows()
   // các view cần gọi backend với view=PIC → tải lại đúng tab đang mở
   if(S.view==="gallery") loadGallery(true);
@@ -1565,18 +1584,17 @@ function switchView(v){
   var meta=VIEW_META[v]||["",""];
   $("tb-title").textContent=meta[0]; $("tb-sub").textContent=meta[1];
   $("views").scrollTop=0;
-  if(v==="gallery"){ if(!S.gallery) loadGallery(); }
+  if(v==="gallery"){ loadGallery(); }
   else if(v==="analytics"){ loadAnalytics(); }
   else if(v==="today") renderDay();
   else if(v==="week") renderWeek();
   else if(v==="report") updateReportPreview();
   else if(v==="kpi") loadKpi();
-  else if(v==="cbc"){ if(!S.cbc) loadCbc(); }
-  else if(v==="presentation"){ if(!S.pres) loadPres(); }
-  else if(v==="newsku"){ if(!S.sku) loadSku(); }
+  else if(v==="cbc") loadCbc();
+  else if(v==="presentation") loadPres();
+  else if(v==="newsku") loadSku();
   else if(v==="monthly") loadMonthly();
 }
-
 /* ═══════════════ RENDER ALL ═══════════════ */
 function renderAll(){
   updateNavBadges();
@@ -2015,24 +2033,44 @@ function renderTerritory(){
 }
 
 /* ═══════════════ TERRITORY DRAWER (giống ảnh 5) ═══════════════ */
+/* ═══════════════ TERRITORY DRAWER (client-side, instant) ═══════════════ */
 function openAccount(name){
-  var loading='<div class="dr-head"><div class="dh-ico">🏥</div><div class="dh-body">'
-    +'<div class="dh-acc">'+esc(name)+'</div><div class="dh-meta">Đang tải lịch sử…</div></div>'
-    +'<button class="dh-close" onclick="closeDrawer()">✕</button></div>'
-    +'<div class="dr-body"><div class="empty-state"><div class="spinner"></div><p>Đang tải dữ liệu địa bàn…</p></div></div>';
-  $("drawer-content").innerHTML=loading;
+  var key=accShort(name).toLowerCase();
+  // 1. Lịch sử task từ client (đã có sẵn trong S.rows)
+  var hist=visibleRows().filter(function(r){ return accShort(r.account).toLowerCase()===key; });
+  hist.sort(function(a,b){
+    var x=(parseDMY(b.startDate)||0)-(parseDMY(a.startDate)||0);
+    return x || (b.r-a.r);
+  });
+  // 2. Stakeholders từ client (S.stakeholders nạp lúc boot)
+  var stk=(S.stakeholders[key]||[]).map(function(s){
+    return { stakeholder:s.name, jobTitle:s.jobTitle, specialize:s.specialize,
+      role:s.role, influence:s.influence, trust:s.trust, phone:s.phone||"", account:s.account };
+  });
+  // 3. Gom ảnh từ tất cả task
+  var photos=[];
+  hist.forEach(function(r){
+    photoUrls(r).forEach(function(u){ photos.push({url:u,date:r.startDate,pic:r.pic}); });
+  });
+  // 4. Lần visiting gần nhất
+  var today=new Date(); today.setHours(23,59,59,999);
+  var lastVisit=null;
+  for(var i=0;i<hist.length;i++){
+    var d=parseDMY(hist[i].startDate);
+    if(d&&d<=today&&/visit/i.test(hist[i].typeAction)){ lastVisit=hist[i]; break; }
+  }
+  if(!lastVisit&&hist.length) lastVisit=hist[0];
+  var visitCount=hist.filter(function(r){return /visit/i.test(r.typeAction);}).length;
+
+  var d={
+    account:name, accountShort:accShort(name),
+    customerType:classifyAccountJs(name),
+    totalTasks:hist.length, visitCount:visitCount, photoCount:photos.length,
+    lastVisit:lastVisit, history:hist, photos:photos,
+  };
+  renderTerritoryDrawer(d, stk);
   $("drawer-bg").classList.add("show"); $("drawer").classList.add("show");
   document.body.style.overflow="hidden";
-
-  var extra={account:name};
-  if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
-  var pHist=apiGet("accountHistory",extra);
-  var pStake=apiGet("cbcList",{account:name}).catch(function(){return {rows:[]};});
-  Promise.all([pHist,pStake]).then(function(res){
-    renderTerritoryDrawer(res[0], (res[1]&&res[1].rows)||[]);
-  }).catch(function(e){
-    $("drawer-content").innerHTML=loading.replace("Đang tải dữ liệu địa bàn…","⚠️ "+esc(e.message));
-  });
 }
 
 function renderTerritoryDrawer(d, stakeholders){
@@ -2047,7 +2085,7 @@ function renderTerritoryDrawer(d, stakeholders){
     body+='<div class="dr-sec"><div class="dr-sec-title">🕑 Latest update</div>'
       +'<div class="dr-plan"><b>'+esc(lv.startDate||"")+'</b> · '+esc(lv.pic||"")
       +(lv.salesProcess?' · '+esc(lv.salesProcess):'')+(lv.typeAction?' · '+esc(lv.typeAction):'')
-      +'<div style="margin-top:8px">'+esc(lv.taskResult||"(chưa có kết quả ghi nhận)")+'</div>'
+      +'<div class="rich" style="margin-top:8px">'+formatSituation(lv.taskResult||"(chưa có kết quả ghi nhận)")+'</div>'
       +'<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">'
       +(lv.feedback?'<span class="badge badge-gray">'+(FB_ICON[lv.feedback]||"")+' '+esc(lv.feedback)+'</span>':'')
       +(lv.nextAction?'<span class="badge badge-orange">➡ '+esc(lv.nextAction)+'</span>':'')
@@ -2127,7 +2165,7 @@ function latestUpdateHTML(r){
     +'<div class="latest-card">'
       +'<div class="lc-head"><b>'+esc(lu.date||"")+'</b> · Cập nhật từ '+esc(lu.pic||"")+'</div>'
       +(tags?'<div class="lc-tags">'+tags+'</div>':'')
-      +'<div class="rich lc-body">'+richText(lu.taskResult||"(chưa có kết quả ghi nhận)")+'</div>'
+      +'<div class="rich lc-body">'+formatSituation(lu.taskResult||"(chưa có kết quả ghi nhận)")+'</div>'
     +'</div></div>';
 }
 function selField(id,field,label,options,current){
@@ -2741,13 +2779,15 @@ function closeModal(id){ stopVoice(); var m=$(id); if(m)m.classList.remove("show
 /* ═══════════════════════════════════════════════════════════
    KPI TRACKING
    ═══════════════════════════════════════════════════════════ */
-function loadKpi(){
+function loadKpi(force){
   S.kpiFy=$("kpi-fy").value||S.currentFy;
+  var ck=cacheKey("kpi")+"|"+S.kpiFy;
   var body=$("kpi-body");
+  if(S._cache[ck]&&!force){ renderKpi(S._cache[ck]); return; }
   body.innerHTML='<div class="empty-state"><div class="spinner"></div><p>Đang tính KPI '+esc(S.kpiFy)+'…</p></div>';
   var extra={ fy:S.kpiFy };
   if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
-  apiGet("kpi",extra).then(function(d){ renderKpi(d); })
+  apiGet("kpi",extra).then(function(d){ S._cache[ck]=d; renderKpi(d); })
     .catch(function(e){ body.innerHTML='<div class="empty-state"><div class="es-icon">⚠️</div><p>'+esc(e.message)+'</p></div>'; });
 }
 function fyProgress(fy){
@@ -2835,9 +2875,11 @@ function monthBreakdownChart(months){
 /* ═══════════════════════════════════════════════════════════
    PRODUCT PRESENTATION
    ═══════════════════════════════════════════════════════════ */
-function loadPres(){
+function loadPres(force){
+  var ck=cacheKey("pres");
+  if(S._cache[ck]&&!force){ S.pres=S._cache[ck]; renderPres(); return; }
   var extra={}; if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
-  apiGet("presList",extra).then(function(d){ S.pres=d.rows||[]; renderPres(); })
+  apiGet("presList",extra).then(function(d){ S.pres=d.rows||[]; S._cache[ck]=S.pres; renderPres(); })
     .catch(function(e){ showToast("⚠️ "+e.message); });
 }
 function renderPres(){
@@ -2892,9 +2934,11 @@ function submitPres(){
 /* ═══════════════════════════════════════════════════════════
    NEW SKU ACCOUNT
    ═══════════════════════════════════════════════════════════ */
-function loadSku(){
+function loadSku(force){
+  var ck=cacheKey("sku");
+  if(S._cache[ck]&&!force){ S.sku=S._cache[ck]; renderSku(); return; }
   var extra={}; if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
-  apiGet("skuList",extra).then(function(d){ S.sku=d.rows||[]; renderSku(); })
+  apiGet("skuList",extra).then(function(d){ S.sku=d.rows||[]; S._cache[ck]=S.sku; renderSku(); })
     .catch(function(e){ showToast("⚠️ "+e.message); });
 }
 function renderSku(){
@@ -2966,11 +3010,19 @@ function submitSku(){
 /* ═══════════════════════════════════════════════════════════
    CBC — KEY STAKEHOLDER
    ═══════════════════════════════════════════════════════════ */
-function loadCbc(){
+/* ── CACHE để hết lag khi chuyển qua lại các tab ── */
+S._cache = S._cache || {};
+function cacheKey(name){ return name+"|"+(S.picView||"ALL"); }
+
+function loadCbc(force){
   var body=$("cbc-body");
+  var ck=cacheKey("cbc");
+  if(S._cache[ck]&&!force&&S.cbcLists){
+    S.cbc=S._cache[ck]; fillCbcFilters(); renderCbc(); return;
+  }
   body.innerHTML='<div class="empty-state"><div class="spinner"></div><p>Đang tải key stakeholder…</p></div>';
   var extra={}; if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
-  var p1=apiGet("cbcList",extra).then(function(d){ S.cbc=d.rows||[]; });
+  var p1=apiGet("cbcList",extra).then(function(d){ S.cbc=d.rows||[]; S._cache[ck]=S.cbc; });
   var p2= S.cbcLists? Promise.resolve() : apiGet("cbcLists").then(function(d){ S.cbcLists=d; fillCbcDropdowns(); });
   Promise.all([p1,p2]).then(function(){ fillCbcFilters(); renderCbc(); })
     .catch(function(e){ body.innerHTML='<div class="empty-state"><div class="es-icon">⚠️</div><p>'+esc(e.message)+'</p></div>'; });
@@ -3093,14 +3145,22 @@ function refreshStakeholders(){
 /* ═══════════════════════════════════════════════════════════
    MONTHLY REPORT
    ═══════════════════════════════════════════════════════════ */
-function loadMonthly(){
+function loadMonthly(force){
   S.mrFy=$("mr-fy").value||S.currentFy;
+  var mp=(S.user&&S.user.role==="admin"&&$("mr-pic"))?$("mr-pic").value:"";
+  var ck="monthly|"+S.mrFy+"|"+(mp||S.picView||"ALL");
   var body=$("monthly-body");
+  if(S._cache[ck]&&!force){
+    S.monthly=S._cache[ck].rows; S.monthlyTaskOrder=S._cache[ck].order; renderMonthly(); return;
+  }
   body.innerHTML='<div class="empty-state"><div class="spinner"></div><p>Đang tải Monthly Report '+esc(S.mrFy)+'…</p></div>';
   var extra={ fy:S.mrFy };
-  if(S.user&&S.user.role==="admin"){ var mp=$("mr-pic").value; if(mp)extra.view=mp; else if(S.picView)extra.view=S.picView; }
-  apiGet("monthlyList",extra).then(function(d){ S.monthly=d.rows||[]; S.monthlyTaskOrder=d.taskOrder||[]; renderMonthly(); })
-    .catch(function(e){ body.innerHTML='<div class="empty-state"><div class="es-icon">⚠️</div><p>'+esc(e.message)+'</p></div>'; });
+  if(S.user&&S.user.role==="admin"){ if(mp)extra.view=mp; else if(S.picView)extra.view=S.picView; }
+  apiGet("monthlyList",extra).then(function(d){
+    S.monthly=d.rows||[]; S.monthlyTaskOrder=d.taskOrder||[];
+    S._cache[ck]={rows:S.monthly,order:S.monthlyTaskOrder};
+    renderMonthly();
+  }).catch(function(e){ body.innerHTML='<div class="empty-state"><div class="es-icon">⚠️</div><p>'+esc(e.message)+'</p></div>'; });
 }
 function renderMonthly(){
   var rows=S.monthly||[];
