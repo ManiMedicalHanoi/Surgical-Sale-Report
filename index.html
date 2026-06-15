@@ -332,7 +332,21 @@ table.dt .td-pic{white-space:nowrap}
 .latest-pop .lp-date{font-size:12px;font-weight:700;color:var(--mmh-navy)}
 .latest-pop .lp-res{font-size:12.5px;color:var(--text);margin:6px 0;line-height:1.5;max-height:120px;overflow:auto}
 .latest-pop .lp-tags{display:flex;gap:5px;flex-wrap:wrap}
+/* ── Rich text: giữ xuống dòng + đậm + nghiêng ── */
+.rich{white-space:pre-wrap;word-break:break-word;line-height:1.6}
+.rich b{font-weight:700;color:var(--mmh-navy)}
+.rich i{font-style:italic}
+.rich br{display:block;content:"";margin-top:2px}
 
+/* ── Drill-down: full task result ── */
+.drill-result{font-size:12.5px;color:var(--text);margin-top:7px;background:var(--pale);border:1px solid var(--lb2);border-radius:8px;padding:9px 11px}
+
+/* ── Latest update box (drawer task) ── */
+.latest-sec{margin-bottom:20px}
+.latest-card{background:var(--pale);border:1px solid var(--lb2);border-left:3px solid var(--mmh-blue);border-radius:var(--r-md);padding:13px 15px}
+.latest-card .lc-head{font-size:13px;font-weight:700;color:var(--mmh-navy);margin-bottom:8px}
+.latest-card .lc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}
+.latest-card .lc-body{font-size:13px;color:var(--text)}
 /* ═══ MODAL (new task) ═══ */
 .modal-bg{position:fixed;inset:0;background:rgba(14,47,95,.5);z-index:7000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);padding:20px}
 .modal-bg.show{display:flex;animation:fade .2s}
@@ -1259,6 +1273,14 @@ function photoUrls(r){ return String(r.photo||"").split(/\s+/).filter(function(u
 function driveId(url){ var m=/\/d\/([\w-]+)/.exec(url)||/[?&]id=([\w-]+)/.exec(url); return m?m[1]:""; }
 function thumbOf(url){ var id=driveId(url); return id? "https://drive.google.com/thumbnail?id="+id+"&sz=w400" : url; }
 function initials(name){ var p=String(name).trim().split(/\s+/); return (((p[0]||"")[0]||"")+((p[p.length-1]||"")[0]||"")).toUpperCase(); }
+function richText(s){
+  var t = esc(s==null ? "" : String(s));
+  t = t.replace(/\*\*([^\*]+)\*\*/g, "<b>$1</b>");
+  t = t.replace(/(^|[^\*])\*([^\*\n]+)\*(?!\*)/g, "$1<i>$2</i>");
+  t = t.replace(/(^|[^_])_([^_\n]+)_(?!_)/g, "$1<i>$2</i>");
+  t = t.replace(/\r\n|\r|\n/g, "<br>");
+  return t;
+}
 function statusBadge(st){
   if(/complet/i.test(st)) return '<span class="badge badge-green">✅ '+esc(st)+'</span>';
   if(/progress/i.test(st)) return '<span class="badge badge-blue">⏳ '+esc(st)+'</span>';
@@ -1799,6 +1821,7 @@ function drillKpi(fnName,label){
 }
 
 function openDrillDrawer(title,rows,exportTag){
+  rows = rows.slice().sort(function(a,b){ return (parseDMY(b.startDate)||0)-(parseDMY(a.startDate)||0); });
   S._drill={rows:rows,tag:exportTag||title};
   var head='<div class="dr-head"><div class="dh-ico">📋</div><div class="dh-body">'
     +'<div class="dh-acc">'+esc(title)+'</div><div class="dh-meta">'+rows.length+' task'
@@ -1811,12 +1834,12 @@ function openDrillDrawer(title,rows,exportTag){
   if(!rows.length){ body+='<div class="empty-state"><div class="es-icon">📭</div><p>Không có task</p></div>'; }
   else {
     body+=rows.map(function(r){
-      return '<div class="mc" style="margin-bottom:9px" onclick="closeDrawer();setTimeout(function(){openDrawer('+r.r+')},300)">'
+      return '<div class="mc" style="margin-bottom:9px;align-items:stretch" onclick="closeDrawer();setTimeout(function(){openDrawer('+r.r+')},300)">'
         +'<div class="mc-tone rt-'+cardTone(r)+'"></div><div class="mc-body">'
         +'<div class="mc-top"><div class="mc-acc">'+esc(accShort(r.account))+'</div><div class="mc-date">'+esc(r.startDate||"")+'</div></div>'
         +'<div class="mc-meta">'+(r.productGroup?'<span class="badge '+(PG_BADGE[r.productGroup]||"badge-gray")+'">'+(PG_ICON[r.productGroup]||"")+' '+esc(r.productGroup)+'</span>':'')
         +statusBadge(r.taskStatus)+(r.pic?'<span class="badge badge-gray">'+esc(r.pic)+'</span>':'')+'</div>'
-        +(r.taskResult?'<div class="mc-sub">'+esc(r.taskResult.slice(0,90))+(r.taskResult.length>90?"…":"")+'</div>':'')
+        +(r.taskResult?'<div class="rich drill-result">'+richText(r.taskResult)+'</div>':'')
         +'</div></div>';
     }).join("");
   }
@@ -2099,11 +2122,13 @@ function latestUpdateHTML(r){
   if(lu.productGroup) tags+='<span class="badge badge-teal">'+esc(lu.productGroup)+'</span> ';
   if(lu.feedback) tags+='<span class="badge badge-gray">'+(FB_ICON[lu.feedback]||"")+' '+esc(lu.feedback)+'</span> ';
   if(lu.nextAction) tags+='<span class="badge badge-orange">➡ '+esc(lu.nextAction)+'</span>';
-  return '<div class="latest-box"><span class="badge badge-navy latest-trigger">🕑 Latest update ▾</span>'
-    +'<div class="latest-pop"><div class="lp-h">Cập nhật gần nhất tại địa bàn này</div>'
-    +'<div class="lp-date">'+esc(lu.date||"")+' · Cập nhật từ '+esc(lu.pic||"")+'</div>'
-    +'<div class="lp-res">'+esc(lu.taskResult||"(chưa có kết quả)")+'</div>'
-    +'<div class="lp-tags">'+tags+'</div></div></div>';
+  return '<div class="dr-sec latest-sec">'
+    +'<div class="dr-sec-title">🕑 Latest update — cập nhật gần nhất tại địa bàn này</div>'
+    +'<div class="latest-card">'
+      +'<div class="lc-head"><b>'+esc(lu.date||"")+'</b> · Cập nhật từ '+esc(lu.pic||"")+'</div>'
+      +(tags?'<div class="lc-tags">'+tags+'</div>':'')
+      +'<div class="rich lc-body">'+richText(lu.taskResult||"(chưa có kết quả ghi nhận)")+'</div>'
+    +'</div></div>';
 }
 function selField(id,field,label,options,current){
   var opts='<option value="">—</option>'+(options||[]).map(function(o){return '<option'+(o===current?" selected":"")+'>'+esc(o)+'</option>';}).join("");
@@ -2116,6 +2141,7 @@ function drawerHTML(r){
   var planLine=[r.salesProcess,r.typeTask,r.typeAction,r.productGroup].filter(Boolean).join(" · ")||"Chưa có thông tin kế hoạch";
   // ── phần dữ liệu (cột trái) ──
   var data='<div class="dr-data">';
+  data+=latestUpdateHTML(r);
   data+='<div class="dr-sec"><div class="dr-sec-title">Kế hoạch / Plan</div><div class="dr-plan"><b>'+esc(accShort(r.account))+'</b> — '+esc(planLine)+'</div></div>';
   data+='<div class="dr-sec"><div class="dr-sec-title">Kết quả thực địa <button class="voice-btn" onclick="toggleVoice(\'dr-result\',this);return false">🎤 Nói</button>'
     +(mmh?'':'<button class="voice-btn" style="background:var(--pale);color:var(--mmh-blue);border-color:var(--lb2)" onclick="openStakePicker(\'dr-result\',\''+jsq(r.account)+'\');return false">👤 Người liên hệ</button>')+'</div>'
@@ -2165,7 +2191,6 @@ function drawerHTML(r){
       +'<div class="dh-ico">'+(mmh?"🏢":(PG_ICON[r.productGroup]||"🏥"))+'</div>'
       +'<div class="dh-body"><div class="dh-acc">'+esc(accShort(r.account))+'</div>'
         +'<div class="dh-meta">'+esc(r.startDate||"")+' · '+esc(r.pic)+(accShort(r.account)!==r.account?' · '+esc(r.account):'')+'</div>'
-        +'<div style="margin-top:8px">'+latestUpdateHTML(r)+'</div>'
       +'</div>'
       +'<button class="dh-close" onclick="closeDrawer()">✕</button>'
     +'</div>'
