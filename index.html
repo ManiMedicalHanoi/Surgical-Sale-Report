@@ -972,13 +972,16 @@ table.dt .td-pic{white-space:nowrap}
       <!-- MONTHLY REPORT -->
       <div class="view" id="view-monthly">
         <div class="toolbar" style="justify-content:space-between">
-          <div class="range-nav">
+          <div class="range-nav" style="flex-wrap:wrap">
             <span class="f-lbl" style="margin:0">Năm tài chính</span>
-            <div class="sel-wrap"><select id="mr-fy" onchange="loadMonthly()" style="padding:9px 30px 9px 12px;border:1.5px solid var(--border);border-radius:10px;font-weight:700"></select></div>
-            <div id="mr-admin-pic" style="display:none"><div class="sel-wrap"><select id="mr-pic" onchange="loadMonthly()" style="padding:9px 30px 9px 12px;border:1.5px solid var(--border);border-radius:10px"></select></div></div>
+            <div class="sel-wrap"><select id="mr-fy" onchange="loadMonthly(true)" style="padding:9px 30px 9px 12px;border:1.5px solid var(--border);border-radius:10px;font-weight:700"></select></div>
+            <span class="f-lbl" style="margin:0">Tháng</span>
+            <div class="sel-wrap"><select id="mr-month" onchange="setMrMonth(this.value)" style="padding:9px 30px 9px 12px;border:1.5px solid var(--border);border-radius:10px;font-weight:700"></select></div>
+            <div id="mr-admin-pic" style="display:none"><div class="sel-wrap"><select id="mr-pic" onchange="loadMonthly(true)" style="padding:9px 30px 9px 12px;border:1.5px solid var(--border);border-radius:10px"></select></div></div>
           </div>
           <button class="tb-btn primary" onclick="sendMonthlyReport()"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8"/></svg>Tạo PDF & gửi báo cáo tháng</button>
         </div>
+        <div id="mr-tabbar" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px"></div>
         <div id="monthly-body"><div class="empty-state"><div class="spinner"></div><p>Đang tải Monthly Report…</p></div></div>
       </div>
     </div>
@@ -1228,7 +1231,7 @@ var S = {
   lastGps:null,          // #3 — toạ độ gần nhất
   stakeholders:{}, influenceScale:[], trustScale:[], currentFy:"",
   cbc:null, cbcLists:null, pres:null, sku:null, monthly:null, monthlyTaskOrder:[],
-  kpiFy:"", mrFy:"",
+  kpiFy:"", mrFy:"", mrMonth:"", mrTypeTask:"",
   skuConfirm:null,       // {dataUrl, mime} ảnh confirmed email chờ upload
   stakeTargetField:null, // textarea đang chèn stakeholder
   stakeList:[],          // danh sách stakeholder đang hiển thị trong picker
@@ -3153,6 +3156,11 @@ function refreshStakeholders(){
 /* ═══════════════════════════════════════════════════════════
    MONTHLY REPORT
    ═══════════════════════════════════════════════════════════ */
+function mrCurrentMonthYYYYMM(){
+  var d=new Date(); return d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2);
+}
+function fmtYM(m){ var s=String(m||"").replace(/[^\d]/g,""); return s.length>=6 ? s.slice(4,6)+"/"+s.slice(0,4) : s; }
+
 function loadMonthly(force){
   S.mrFy=$("mr-fy").value||S.currentFy;
   var mp=(S.user&&S.user.role==="admin"&&$("mr-pic"))?$("mr-pic").value:"";
@@ -3170,28 +3178,78 @@ function loadMonthly(force){
     renderMonthly();
   }).catch(function(e){ body.innerHTML='<div class="empty-state"><div class="es-icon">⚠️</div><p>'+esc(e.message)+'</p></div>'; });
 }
+
+// các tháng có dữ liệu, mới nhất trước
+function mrMonths(){
+  var set={}; (S.monthly||[]).forEach(function(r){ var m=String(r.month||"").replace(/[^\d]/g,""); if(m.length>=6) set[m.slice(0,6)]=1; });
+  return Object.keys(set).sort().reverse();
+}
+function setMrMonth(m){ S.mrMonth=m; S.mrTypeTask=""; renderMonthly(); }
+function setMrTypeTask(tt){ S.mrTypeTask=tt; renderMonthly(); }
+
 function renderMonthly(){
   var rows=S.monthly||[];
   var body=$("monthly-body");
-  if(!rows.length){ body.innerHTML='<div class="empty-state"><div class="es-icon">📅</div><p>Chưa có dữ liệu Monthly Report cho '+esc(S.mrFy)+'</p></div>'; return; }
-  // group by PIC
-  var groups={}, order=[];
-  rows.forEach(function(r){ if(!groups[r.pic]){groups[r.pic]=[];order.push(r.pic);} groups[r.pic].push(r); });
-  var html="";
-  order.forEach(function(pic){
-    var arr=groups[pic];
-    // sort theo task order
-    arr.sort(function(a,b){ var ia=S.monthlyTaskOrder.indexOf(a.typeTask),ib=S.monthlyTaskOrder.indexOf(b.typeTask); return (ia<0?99:ia)-(ib<0?99:ib); });
-    html+='<div class="panel"><div class="panel-head"><h3>📋 '+esc(pic)+'</h3><span class="ph-sub">'+esc(arr[0].area||"")+' · '+esc(S.mrFy)+' · '+arr.length+' key task</span></div>'
-      +'<div class="panel-body flush"><div class="tbl-wrap"><table class="dt"><thead><tr><th style="width:200px">Type Task</th><th>Plan</th><th>Result</th></tr></thead><tbody>';
-    arr.forEach(function(r){
-      var canEdit = (S.user.role==="admin") || picMatchJs(r.pic,S.user.pic);
-      html+='<tr style="cursor:'+(canEdit?"pointer":"default")+'"'+(canEdit?' onclick="openMonthlyEdit('+r.r+')"':'')+'>'
-        +'<td style="font-weight:700;color:var(--mmh-navy);background:var(--pale)">'+esc(r.typeTask)+'</td>'
-        +'<td style="font-size:12px;white-space:pre-wrap;max-width:340px">'+esc(r.plan||"—")+'</td>'
-        +'<td style="font-size:12px;white-space:pre-wrap;max-width:340px">'+esc(r.result||"—")+(canEdit?'<div style="font-size:10px;color:var(--mmh-blue);margin-top:4px">✏️ Bấm để cập nhật</div>':'')+'</td></tr>';
-    });
-    html+='</tbody></table></div></div></div>';
+
+  // ── dropdown Tháng ──
+  var months=mrMonths();
+  if(!S.mrMonth || months.indexOf(S.mrMonth)<0){
+    var cur=mrCurrentMonthYYYYMM();
+    S.mrMonth = months.indexOf(cur)>=0 ? cur : (months[0]||"");
+  }
+  var msel=$("mr-month");
+  if(msel){
+    msel.innerHTML = months.length
+      ? months.map(function(m){return '<option value="'+m+'"'+(m===S.mrMonth?" selected":"")+'>'+fmtYM(m)+'</option>';}).join("")
+      : '<option value="">—</option>';
+  }
+
+  if(!rows.length){
+    $("mr-tabbar").innerHTML="";
+    body.innerHTML='<div class="empty-state"><div class="es-icon">📅</div><p>Chưa có dữ liệu Monthly Report cho '+esc(S.mrFy)+'</p></div>';
+    return;
+  }
+
+  // ── lọc theo tháng đang chọn ──
+  var monthRows=rows.filter(function(r){ return String(r.month||"").replace(/[^\d]/g,"").slice(0,6)===S.mrMonth; });
+
+  // ── thanh tab Type Task (theo thứ tự backend) ──
+  var ttSet={}, ttOrdered=[];
+  (S.monthlyTaskOrder||[]).forEach(function(tt){ if(monthRows.some(function(r){return r.typeTask===tt;})){ ttSet[tt]=1; ttOrdered.push(tt); } });
+  monthRows.forEach(function(r){ if(r.typeTask && !ttSet[r.typeTask]){ ttSet[r.typeTask]=1; ttOrdered.push(r.typeTask); } });
+
+  if(!S.mrTypeTask || ttOrdered.indexOf(S.mrTypeTask)<0) S.mrTypeTask = ttOrdered[0]||"";
+
+  var tb=$("mr-tabbar");
+  if(tb){
+    tb.innerHTML = '<button class="filter-chip'+(S.mrTypeTask===""?" active":"")+'" onclick="setMrTypeTask(\'\')">Tất cả ('+monthRows.length+')</button>'
+      + ttOrdered.map(function(tt){
+          var cnt=monthRows.filter(function(r){return r.typeTask===tt;}).length;
+          return '<button class="filter-chip'+(S.mrTypeTask===tt?" active":"")+'" onclick="setMrTypeTask(\''+jsq(tt)+'\')">'+esc(tt)+' ('+cnt+')</button>';
+        }).join("");
+  }
+
+  // ── lọc theo type task đang chọn ──
+  var showRows = S.mrTypeTask ? monthRows.filter(function(r){return r.typeTask===S.mrTypeTask;}) : monthRows.slice();
+  showRows.sort(function(a,b){ var ia=(S.monthlyTaskOrder||[]).indexOf(a.typeTask),ib=(S.monthlyTaskOrder||[]).indexOf(b.typeTask); return (ia<0?99:ia)-(ib<0?99:ib); });
+
+  if(!showRows.length){
+    body.innerHTML='<div class="empty-state"><div class="es-icon">📅</div><p>Không có dữ liệu cho tháng '+esc(fmtYM(S.mrMonth))+'</p></div>';
+    return;
+  }
+
+  // ── render từng key task dạng card Plan | Result, có nút Cập nhật ──
+  var html='<div style="margin-bottom:14px;font-size:13px;color:var(--sub)">📅 <b style="color:var(--mmh-navy)">'+esc(fmtYM(S.mrMonth))+'</b> · '+esc(S.mrFy)+' · '+showRows.length+' key task</div>';
+  showRows.forEach(function(r){
+    var canEdit = (S.user.role==="admin") || picMatchJs(r.pic,S.user.pic);
+    html+='<div class="panel"><div class="panel-head"><h3>'+esc(r.typeTask)+'</h3>'
+      +'<span class="ph-sub">'+esc(r.pic)+(r.area?' · '+esc(r.area):'')+'</span>'
+      +(canEdit?'<button class="tb-btn primary" style="padding:7px 13px" onclick="openMonthlyEdit('+r.r+')"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>Cập nhật</button>':'')
+      +'</div>'
+      +'<div class="panel-body" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
+        +'<div><div class="dr-sec-title">Plan</div><div class="rich" style="font-size:13px;background:var(--pale);border:1px solid var(--lb2);border-radius:8px;padding:12px 14px;min-height:60px">'+formatSituation(r.plan||"—")+'</div></div>'
+        +'<div><div class="dr-sec-title">Result</div><div class="rich" style="font-size:13px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px 14px;min-height:60px">'+formatSituation(r.result||"—")+'</div></div>'
+      +'</div></div>';
   });
   body.innerHTML=html;
 }
@@ -3212,19 +3270,31 @@ function openMonthlyEdit(rowIndex){
 function saveMonthly(){
   if(!Object.keys(S.dirty).length){ showToast("Chưa có thay đổi"); return; }
   overlay(true,"Đang lưu","Ghi Monthly Report vào Sheet…");
+  // cập nhật ngay trên client để hiển thị tức thì, đỡ phải chờ tải lại
+  var rowObj=(S.monthly||[]).filter(function(x){return x.r===S.drawerRow;})[0];
   apiGet("updateMonthly",{rowIndex:S.drawerRow},{updates:S.dirty}).then(function(){
-    overlay(false); closeDrawer(); showToast("✓ Đã cập nhật Monthly Report"); loadMonthly();
+    if(rowObj){ if("plan" in S.dirty) rowObj.plan=S.dirty.plan; if("result" in S.dirty) rowObj.result=S.dirty.result; }
+    // xoá cache monthly để lần sau tải mới
+    if(S._cache){ Object.keys(S._cache).forEach(function(k){ if(/^monthly\|/.test(k)) delete S._cache[k]; }); }
+    overlay(false); closeDrawer(); showToast("✓ Đã cập nhật Monthly Report");
+    renderMonthly();   // vẽ lại ngay từ client, giữ nguyên tháng/tab đang chọn
   }).catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
 }
 function sendMonthlyReport(){
-  overlay(true,"Đang gửi","Tạo PDF báo cáo tháng & gửi email…");
-  var body={ action:"monthlyReport", fy:S.mrFy };
-  if(S.user&&S.user.role==="admin"){ var mp=$("mr-pic").value; if(mp)body.view=mp; }
-  apiPost(body,90000).then(function(r){
-    overlay(false); showToast("✓ "+(r.message||"Đã gửi báo cáo tháng"));
+  if(!S.mrMonth){ showToast("Chưa có tháng để gửi"); return; }
+  overlay(true,"Đang gửi","Tạo PDF báo cáo tháng "+fmtYM(S.mrMonth)+" & gửi email…");
+  // gửi cho CHÍNH PIC đang xem: sales = chính họ; admin = PIC đang chọn (hoặc chính admin)
+  var targetPic = (S.user&&S.user.role==="admin" && $("mr-pic") && $("mr-pic").value) ? $("mr-pic").value : S.user.pic;
+  var body={ action:"monthlyReport", fy:S.mrFy, period:S.mrMonth, pic:targetPic };
+  if(S.user&&S.user.role==="admin" && $("mr-pic") && $("mr-pic").value) body.view=$("mr-pic").value;
+  apiPost(body,120000).then(function(r){
+    overlay(false); showToast("✓ "+(r.message||"Đã gửi báo cáo tháng "+fmtYM(S.mrMonth)+" cho "+targetPic));
   }).catch(function(e){
-    apiGet("monthlyReport",{fy:S.mrFy, view:(S.user.role==="admin"?($("mr-pic").value||""):"")}).then(function(r){
-      overlay(false); showToast("✓ "+(r.message||"Đã gửi"));
+    // fallback JSONP
+    var extra={ fy:S.mrFy, period:S.mrMonth };
+    if(S.user&&S.user.role==="admin" && $("mr-pic") && $("mr-pic").value) extra.view=$("mr-pic").value;
+    apiGet("monthlyReport",extra).then(function(r){
+      overlay(false); showToast("✓ "+(r.message||"Đã gửi báo cáo tháng"));
     }).catch(function(e2){ overlay(false); showToast("⚠️ "+e2.message); });
   });
 }
