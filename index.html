@@ -608,6 +608,8 @@ table.dt .td-pic{white-space:nowrap}
   .msh-name{font-size:16px;font-weight:700;color:var(--text)}
   .msh-role{font-size:12px;color:var(--sub)}
   .msh-btn{display:flex;align-items:center;gap:13px;width:100%;padding:15px 12px;border:none;background:none;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;border-radius:12px;text-align:left}
+  .msh-btn.primary{background:var(--mmh-navy);color:#fff;margin-bottom:6px}
+  .msh-btn.primary svg{stroke:var(--mmh-yellow)}
   .msh-btn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .msh-btn:active{background:var(--pale)}
   .msh-btn.danger{color:var(--danger)}
@@ -1013,8 +1015,8 @@ table.dt .td-acc{font-weight:600}
       <button class="tb-btn" id="btn-refresh" onclick="refreshData(true)">
         <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>Làm mới
       </button>
-      <button class="tb-btn primary" onclick="openNewTask()">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Tạo task
+      <button class="tb-btn primary" onclick="openCbcUpdateMenu()" title="Thêm địa bàn / Key stakeholder">
+        <svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></svg>Thêm địa bàn
       </button>
       <button class="tb-btn" id="m-menu-btn" onclick="openMSheet()" style="display:none">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
@@ -1310,6 +1312,8 @@ table.dt .td-acc{font-weight:600}
       <div class="msh-av" id="msh-av">?</div>
       <div class="msh-info"><div class="msh-name" id="msh-name">—</div><div class="msh-role" id="msh-role">—</div></div>
     </div>
+    <button class="msh-btn primary" onclick="closeMSheet();openCbcUpdateMenu()">
+      <svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h.01M9 13h.01M15 9h.01M15 13h.01"/></svg> Thêm địa bàn / Key stakeholder</button>
     <button class="msh-btn" onclick="switchView('kpi');closeMSheet()">
       <svg viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"/></svg> KPI Tracking</button>
     <button class="msh-btn" onclick="switchView('cbc');closeMSheet()">
@@ -1474,9 +1478,9 @@ table.dt .td-acc{font-weight:600}
 <!-- #2 — CBC UPDATE OPTIONS MENU -->
 <div class="modal-bg" id="cbc-update-menu">
   <div class="modal-card" style="max-width:480px">
-    <div class="modal-head"><h3>🛠️ Cập nhật thông tin</h3><button class="modal-close" onclick="closeModal('cbc-update-menu')">✕</button></div>
+    <div class="modal-head"><h3>🏥 Thêm địa bàn / Key stakeholder</h3><button class="modal-close" onclick="closeModal('cbc-update-menu')">✕</button></div>
     <div class="modal-body">
-      <p style="font-size:13px;color:var(--sub);margin-bottom:16px">Chọn thao tác bạn muốn thực hiện trên sheet <b>CBC</b>:</p>
+      <p style="font-size:13px;color:var(--sub);margin-bottom:16px">Chọn thao tác bạn muốn thực hiện trên dữ liệu <b>CBC</b>:</p>
       <div class="cbc-opt-grid">
         <button class="cbc-opt" onclick="closeModal('cbc-update-menu');openSiteModal('')">
           <div class="co-ico">🏥</div>
@@ -3697,11 +3701,13 @@ function cbcCard(r){
     +'</div>';
 }
 function openCbcModal(){
-  $("cbc-modal-title").textContent="👤 Thêm key stakeholder";
-  $("cbc-row").value="";
-  ["cbc-account","cbc-province","cbc-address","cbc-name","cbc-phone"].forEach(function(id){$(id).value="";});
-  ["cbc-type","cbc-sector","cbc-area","cbc-spec","cbc-job","cbc-role","cbc-influence","cbc-trust","cbc-drivers"].forEach(function(id){var el=$(id);if(el)el.selectedIndex=0;});
-  $("cbc-modal").classList.add("show");
+  ensureCbcListsThen(function(){
+    $("cbc-modal-title").textContent="👤 Thêm key stakeholder";
+    $("cbc-row").value="";
+    ["cbc-account","cbc-province","cbc-address","cbc-name","cbc-phone"].forEach(function(id){$(id).value="";});
+    ["cbc-type","cbc-sector","cbc-area","cbc-spec","cbc-job","cbc-role","cbc-influence","cbc-trust","cbc-drivers"].forEach(function(id){var el=$(id);if(el)el.selectedIndex=0;});
+    $("cbc-modal").classList.add("show");
+  });
 }
 function openCbcEdit(rowIndex){
   var r=(S.cbc||[]).filter(function(x){return x.r===rowIndex;})[0]; if(!r)return;
@@ -3823,6 +3829,18 @@ function submitSite(){
 }
 function openSitePickList(){
   ensureCbcListsThen(function(){
+    if(!S.cbc || !S.cbc.length){
+      // chưa vào tab CBC → nạp danh sách địa bàn trước
+      overlay(true,"Đang tải","Lấy danh sách địa bàn…");
+      var extra={}; if(S.user&&S.user.role==="admin"&&S.picView) extra.view=S.picView;
+      apiGet("cbcList",extra).then(function(d){ S.cbc=d.rows||[]; overlay(false); _showSitePickList(); })
+        .catch(function(e){ overlay(false); showToast("⚠️ "+e.message); });
+      return;
+    }
+    _showSitePickList();
+  });
+}
+function _showSitePickList(){
     // gom danh sách account duy nhất từ CBC
     var seen={}, list=[];
     (S.cbc||[]).forEach(function(r){
@@ -3835,7 +3853,6 @@ function openSitePickList(){
     $("site-pick-search").value="";
     renderSitePickList();
     $("site-pick-modal").classList.add("show");
-  });
 }
 function renderSitePickList(){
   var q=($("site-pick-search").value||"").toLowerCase().trim();
