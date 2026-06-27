@@ -1855,9 +1855,9 @@ function openProvincePicker(fieldId, onPick){
 /* ═══════════════ BOOT / LOGIN ═══════════════ */
 function setProgress(p,m){ $("load-progress").style.width=p+"%"; if(m)$("load-msg").textContent=m; }
 var KNOWN_PICS=[
-  {pic:"Viet Ha",role:"sales"},{pic:"Khang",role:"sales"},{pic:"Trang",role:"sales"},
-  {pic:"Giang",role:"admin"},{pic:"Tuyen",role:"admin"},{pic:"Admin",role:"admin"},
+  {pic:"Viet Ha",role:"sales"},{pic:"Khang",role:"sales"},{pic:"Admin",role:"admin"},
 ];
+var LOGIN_PASS="4321";  // mật khẩu đăng nhập (nhớ sau lần đầu)
 window.addEventListener("load",function(){
   var saved=""; try{ saved=localStorage.getItem("mmh_fr_pic")||""; }catch(e){}
   if(saved) boot(saved); else showLogin();
@@ -1875,6 +1875,15 @@ function showLogin(){
   $("pic-login").classList.add("show");
 }
 function chooseLogin(pic){
+  // Mật khẩu 4321 — chỉ hỏi lần đầu trên thiết bị này, sau đó nhớ luôn
+  var passed=false;
+  try{ passed = localStorage.getItem("mmh_fr_auth")==="1"; }catch(e){}
+  if(!passed){
+    var input=prompt("Nhập mật khẩu để đăng nhập:");
+    if(input===null) return;              // huỷ
+    if(String(input).trim()!==LOGIN_PASS){ alert("Mật khẩu không đúng. Vui lòng thử lại."); return; }
+    try{ localStorage.setItem("mmh_fr_auth","1"); }catch(e){}
+  }
   try{localStorage.setItem("mmh_fr_pic",pic);}catch(e){}
   $("pic-login").classList.remove("show");
   $("loading-screen").style.display="flex";
@@ -1902,7 +1911,7 @@ function boot(pic){
     initUI();
     setProgress(100,"Sẵn sàng");
     updateStatus(true, S.rows.length+" task");
-    setTimeout(function(){ $("loading-screen").style.display="none"; $("app").classList.add("ready"); },250);
+    setTimeout(function(){ $("loading-screen").style.display="none"; $("app").classList.add("ready"); },80);
   }).catch(function(e){
     var hint=connHint(e);
     $("load-error").style.display="block";
@@ -1977,11 +1986,8 @@ function initUI(){
   renderAll();
   S.view = "today";
   switchView("today");
-  try{ getGps(); }catch(e){}
-  setTimeout(prefetchTabs, 400);
-}
-function prefetchTabs(){
-  try{ loadCbc(); loadPres(); loadSku(); }catch(e){}
+  // #2 — KHÔNG prefetch các tab khác & KHÔNG lấy GPS lúc boot (làm chậm & nặng mạng).
+  // Các tab CBC/Pres/SKU sẽ tự load khi người dùng bấm vào (đã có cơ chế lazy-load + cache).
 }
 function fyOptionsList(){
   var cur=parseInt((S.currentFy||"FY67").replace(/\D/g,""),10)||67;
@@ -1999,6 +2005,7 @@ function initFyDropdowns(){
   });
 }
 function setPicView(p){
+  if(!(S.user && S.user.role==="admin")) return;  // chỉ admin được đổi PIC view
   S.picView=p;
   var chips=$("pic-bar").children;
   for(var i=0;i<chips.length;i++){
@@ -3228,7 +3235,9 @@ function fillNewTaskForm(){
   fill("nt-st",S.lists.taskStatus||["Not Started","In Progress","Completed"],"");
   if(S.user&&S.user.role==="admin"){
     $("nt-pic-wrap").style.display="";
-    $("nt-pic").innerHTML=(S.lists.pics||[]).map(function(p){return '<option'+(p===S.user.pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
+    // Admin mặc định tạo task test dưới tên "Giang" (vẫn đổi được sang PIC khác)
+    var defPic = (S.lists.pics||[]).indexOf("Giang")>=0 ? "Giang" : S.user.pic;
+    $("nt-pic").innerHTML=(S.lists.pics||[]).map(function(p){return '<option'+(p===defPic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
   }
 }
 function pickOptionLike(selId, candidates){
