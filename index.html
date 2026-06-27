@@ -9,16 +9,23 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --mmh-blue:#3A5CAA; --mmh-navy:#003047; --mmh-yellow:#FFE100;
-  --lb1:#C2D4F1; --lb2:#CADFEE; --lb3:#CFE2F3; --pale:#F0F7FF; --gray:#F5F7FA;
-  --white:#FFFFFF; --text:#1a2340; --sub:#5a6a8a; --border:#e2e8f5; --link:#1155CC;
-  --success:#16a34a; --warning:#f59e0b; --danger:#ef4444; --info:#3b82f6;
-  --font-main:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
-  --r-xl:18px; --r-lg:14px; --r-md:10px; --r-sm:8px;
-  --sh-sm:0 1px 3px rgba(14,47,95,.06),0 1px 2px rgba(14,47,95,.04);
-  --sh-md:0 4px 16px rgba(14,47,95,.08);
-  --sh-lg:0 12px 40px rgba(14,47,95,.16);
-  --sidebar-w:248px; --header-h:62px;
+  /* Brand accents (giữ nhận diện MMH) */
+  --mmh-blue:#3A5CAA; --mmh-navy:#0B2A4A; --mmh-yellow:#FFE100;
+  --accent:#3A5CAA; --accent-soft:#EEF3FB; --accent-2:#5B7FD0;
+  /* Neutral palette tối giản kiểu Linear/Notion */
+  --lb1:#dbe4f3; --lb2:#e4ebf6; --lb3:#eef2f9; --pale:#F4F7FC; --gray:#F7F8FA;
+  --white:#FFFFFF; --text:#16202E; --sub:#6B7688; --faint:#9AA3B2;
+  --border:#ECEEF2; --border-2:#E2E5EB; --link:#3A5CAA;
+  --success:#16a34a; --success-soft:#E8F6EE; --warning:#E08A00; --warning-soft:#FCF1E0;
+  --danger:#E5484D; --danger-soft:#FDEBEC; --info:#3A5CAA;
+  --font-main:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --r-xl:20px; --r-lg:16px; --r-md:12px; --r-sm:9px;
+  --sh-sm:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.03);
+  --sh-md:0 4px 12px rgba(16,24,40,.06),0 2px 4px rgba(16,24,40,.04);
+  --sh-lg:0 12px 32px rgba(16,24,40,.10),0 4px 8px rgba(16,24,40,.04);
+  --sh-xl:0 24px 60px rgba(16,24,40,.16);
+  --sidebar-w:252px; --header-h:60px;
+  --ease:cubic-bezier(.32,.72,0,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:var(--font-main);color:var(--text);background:var(--gray);-webkit-font-smoothing:antialiased;font-size:14px}
@@ -693,6 +700,192 @@ table.dt .td-pic{white-space:nowrap}
   .kpi-row{grid-template-columns:1fr}
   .bn-item span{font-size:9.5px}
 }
+
+/* ════════════════════════════════════════════════════════════════
+   v5 DESIGN LAYER — Minimal/refined (Linear · Notion inspired)
+   Override key components; class names unchanged for JS compat.
+   ════════════════════════════════════════════════════════════════ */
+html,body{background:var(--gray);color:var(--text);letter-spacing:-.01em}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-thumb{background:#d7dbe2;border-radius:8px;border:3px solid var(--gray)}
+::-webkit-scrollbar-thumb:hover{background:#c2c8d2}
+
+/* ── Sidebar: lighter, cleaner ── */
+#sidebar{background:#0B2A4A;color:#fff}
+.sb-brand{padding:20px 20px 14px}
+.sb-brand .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#3A5CAA,#5B7FD0);box-shadow:0 4px 12px rgba(58,92,170,.4)}
+.sb-brand .bt-1{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.sb-brand .bt-2{font-size:10px;opacity:.5;letter-spacing:.6px;font-weight:600}
+.nav-group-label{font-size:10.5px;letter-spacing:.5px;color:rgba(255,255,255,.38);padding:16px 12px 6px;font-weight:600;text-transform:uppercase}
+.nav-item{padding:9px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:rgba(255,255,255,.72);gap:11px;margin-bottom:1px}
+.nav-item svg{width:18px;height:18px;stroke-width:1.8}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.12);color:#fff;box-shadow:none;font-weight:600}
+.nav-item.active::before{display:none}
+.nav-item .ni-badge{background:rgba(255,255,255,.14);font-size:10.5px;font-weight:600;padding:1px 7px}
+.nav-item.active .ni-badge{background:var(--mmh-yellow);color:#0B2A4A}
+.sb-foot{border-top:1px solid rgba(255,255,255,.08);padding:10px}
+.sb-user{background:rgba(255,255,255,.05);border-radius:12px;padding:9px}
+.sb-user .su-av{background:linear-gradient(135deg,#3A5CAA,#5B7FD0);width:36px;height:36px;font-size:13px}
+.sb-user .su-name{font-size:12.5px;font-weight:600}
+.sb-user .su-role{font-size:10.5px;opacity:.55}
+
+/* ── Topbar ── */
+#topbar{height:var(--header-h);border-bottom:1px solid var(--border);padding:0 26px;backdrop-filter:saturate(1.4)}
+.tb-title{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.02em}
+.tb-sub{font-size:12px;color:var(--sub);margin-top:0}
+.conn-pill{background:var(--gray);border:1px solid var(--border);font-size:11.5px;padding:5px 11px;border-radius:8px;color:var(--sub)}
+.tb-btn{border:1px solid var(--border-2);border-radius:9px;font-size:13px;font-weight:500;padding:8px 14px;color:var(--text);transition:all .15s var(--ease)}
+.tb-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.tb-btn svg{width:15px;height:15px}
+.tb-btn.primary{background:var(--mmh-navy);border:1px solid var(--mmh-navy);box-shadow:var(--sh-sm)}
+.tb-btn.primary:hover{background:#11365e;opacity:1}
+
+#views{padding:26px 28px}
+
+/* ── Greeting hero (welcome back) ── */
+.hero-greet{margin:-6px 0 22px}
+.hero-greet h1{font-size:26px;font-weight:700;letter-spacing:-.03em;color:var(--text);line-height:1.15}
+.hero-greet h1 .wave{display:inline-block;animation:wave 1.8s ease-in-out 1}
+@keyframes wave{0%,60%,100%{transform:rotate(0)}20%{transform:rotate(16deg)}40%{transform:rotate(-8deg)}}
+.hero-greet p{font-size:14px;color:var(--sub);margin-top:5px}
+
+/* ── Filter chips ── */
+.filter-chip{border:1px solid var(--border-2);border-radius:9px;font-size:12.5px;font-weight:500;padding:7px 14px;color:var(--sub);transition:all .15s var(--ease)}
+.filter-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.filter-chip.active{background:var(--mmh-navy);border-color:var(--mmh-navy);color:#fff}
+.filter-chip.gold.active{background:var(--mmh-navy);border-color:var(--mmh-navy);color:var(--mmh-yellow)}
+
+/* ── KPI cards ── */
+.kpi{border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;box-shadow:none;transition:all .2s var(--ease)}
+.kpi:hover{border-color:var(--border-2);box-shadow:var(--sh-sm);transform:translateY(-1px)}
+.kpi .k-ico{font-size:22px;opacity:.9;top:16px;right:16px}
+.kpi .k-lbl{font-size:11.5px;color:var(--sub);font-weight:500;letter-spacing:.01em;text-transform:none}
+.kpi .k-val{font-size:30px;font-weight:700;color:var(--text);letter-spacing:-.03em;margin-top:8px}
+.kpi .k-meta{font-size:11.5px;color:var(--faint);margin-top:6px}
+.kpi.accent{background:linear-gradient(135deg,#0B2A4A,#163d63);border:none}
+.kpi.accent .k-val{color:var(--mmh-yellow)}
+
+/* ── Panels ── */
+.panel{border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:none}
+.panel-head{padding:16px 20px;border-bottom:1px solid var(--border)}
+.panel-head h3{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
+.panel-head .ph-sub{font-size:11.5px;color:var(--faint)}
+
+/* ── Inputs / selects ── */
+.search-box input,.fl-select select,.range-nav input[type=date]{border:1px solid var(--border-2);border-radius:10px;font-size:13px;background:var(--white);transition:all .15s var(--ease)}
+.search-box input:focus,.fl-select select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.search-box svg{stroke:var(--faint)}
+.rn-today{border:1px solid var(--border-2);background:var(--white);color:var(--text);border-radius:9px;font-weight:500;font-size:12.5px}
+.rn-today:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.range-nav .rn-btn{border:1px solid var(--border-2);border-radius:9px}
+.range-nav .rn-label{font-size:14px;font-weight:600;letter-spacing:-.01em}
+
+/* ── Tables ── */
+table.dt thead th{background:var(--gray);color:var(--sub);font-weight:600;font-size:11px;letter-spacing:.02em;padding:11px 16px;border-bottom:1px solid var(--border)}
+table.dt thead th:hover{background:#eef0f4}
+table.dt tbody td{padding:13px 16px}
+table.dt tbody tr:hover{background:var(--accent-soft)}
+table.dt .td-acc{font-weight:600}
+
+/* ── Badges (flatter) ── */
+.badge{border-radius:7px;font-size:11px;font-weight:600;padding:3px 9px}
+.badge-blue{background:var(--accent-soft);color:var(--accent)}
+.badge-green{background:var(--success-soft);color:#15803d}
+.badge-gray{background:var(--gray);color:var(--sub)}
+.badge-orange{background:var(--warning-soft);color:#b45309}
+.badge-navy{background:var(--mmh-navy);color:var(--mmh-yellow)}
+
+/* ── Territory / cards ── */
+.terr-card,.cbc-card{border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:none;transition:all .2s var(--ease)}
+.terr-card:hover,.cbc-card:hover{border-color:var(--accent);box-shadow:var(--sh-md);transform:translateY(-2px)}
+.terr-card .tc-name{font-size:14.5px;font-weight:600}
+.terr-card .tcs-v{font-size:19px;font-weight:700;color:var(--text)}
+
+/* ── Buttons ── */
+.btn-fill,.save-btn{background:var(--mmh-navy);border-radius:11px;font-weight:600;box-shadow:var(--sh-sm)}
+.btn-fill:hover{background:#11365e;opacity:1}
+.save-btn{background:var(--mmh-navy)}
+.save-btn:hover{background:#11365e;opacity:1}
+.btn-ghost{border:1px solid var(--border-2);border-radius:11px;font-weight:500}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+
+/* ── Drawer / modal ── */
+#drawer{border-radius:0;box-shadow:-8px 0 40px rgba(16,24,40,.12)}
+.dr-head{padding:22px 26px 16px}
+.dr-head .dh-acc{font-size:19px;font-weight:700;letter-spacing:-.02em}
+.dr-head .dh-ico{border-radius:13px;background:var(--accent-soft)}
+.dr-sec-title{font-size:11px;color:var(--sub);letter-spacing:.04em;font-weight:600}
+.dr-plan{background:var(--pale);border:1px solid var(--border);border-radius:var(--r-md)}
+.dr-sec textarea,.dr-sec select,.dr-sec input[type=text]{border:1px solid var(--border-2);border-radius:11px}
+.dr-sec textarea:focus,.dr-sec select:focus,.dr-sec input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.modal-card{border-radius:var(--r-xl);box-shadow:var(--sh-xl)}
+.modal-head h3{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.mf input,.mf select,.mf textarea{border-radius:11px;background:var(--gray)}
+.mf input:focus,.mf select:focus,.mf textarea:focus{box-shadow:0 0 0 3px var(--accent-soft)}
+.mf label{font-size:11px;color:var(--sub);letter-spacing:.01em}
+
+/* ── Login: welcome style ── */
+#pic-login{background:radial-gradient(120% 120% at 100% 0,#163d63 0,#0B2A4A 60%)}
+.login-card{border-radius:24px;box-shadow:var(--sh-xl)}
+.login-head h2{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.pl-btn{border:1px solid var(--border-2);border-radius:14px;transition:all .18s var(--ease)}
+.pl-btn:hover{border-color:var(--accent);box-shadow:var(--sh-md);transform:translateY(-2px)}
+.pl-av{border-radius:13px;background:linear-gradient(135deg,#3A5CAA,#5B7FD0)}
+
+/* ── Loading ── */
+.load-logo{border-radius:22px;background:linear-gradient(135deg,#3A5CAA,#5B7FD0)}
+#loading-screen h2{font-weight:700;letter-spacing:-.02em}
+
+/* ── FAB ── */
+#fab-desktop,#fab{background:var(--mmh-navy)}
+#fab-desktop{box-shadow:0 8px 24px rgba(11,42,74,.4)}
+
+/* ── Toast ── */
+#toast{background:var(--text);border-radius:12px;font-weight:500;box-shadow:var(--sh-xl);padding:12px 20px}
+
+/* ── Gallery ── */
+.gal-item{border:1px solid var(--border);border-radius:var(--r-md)}
+.gal-item.sel-photo{outline:3px solid var(--accent);outline-offset:-1px}
+.gal-summary.big .gal-stat{border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:none}
+.gal-summary.big .gal-stat.accent{background:linear-gradient(135deg,#0B2A4A,#163d63)}
+
+/* #1.multi — checkbox chọn ảnh + thanh thao tác */
+.photo-check{position:absolute;top:7px;left:7px;width:24px;height:24px;border-radius:7px;border:2px solid #fff;background:rgba(0,0,0,.35);z-index:4;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.photo-check.on{background:var(--accent);border-color:#fff}
+.gal-selbar{position:sticky;top:0;z-index:30;display:none;align-items:center;gap:12px;background:var(--mmh-navy);color:#fff;border-radius:12px;padding:11px 16px;margin-bottom:14px;box-shadow:var(--sh-md)}
+.gal-selbar.show{display:flex}
+.gal-selbar .gsb-count{font-weight:700;font-size:14px}
+.gal-selbar .gsb-sp{flex:1}
+.gal-selbar button{border:none;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer}
+.gal-selbar .gsb-del{background:var(--danger);color:#fff}
+.gal-selbar .gsb-cancel{background:rgba(255,255,255,.15);color:#fff}
+.gal-selbar .gsb-all{background:rgba(255,255,255,.15);color:#fff}
+
+/* ── Empty states ── */
+.empty-state .es-icon{opacity:.22}
+.empty-state p{color:var(--faint)}
+
+/* ── Bottom nav (mobile) refined ── */
+@media(max-width:720px){
+  #views{padding:16px 16px calc(84px + env(safe-area-inset-bottom,0px))}
+  #bottom-nav{border-top:1px solid var(--border);box-shadow:0 -2px 16px rgba(16,24,40,.05);padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px))}
+  .bn-item{border-radius:12px;padding:6px 2px}
+  .bn-item svg{width:22px;height:22px}
+  .bn-item span{font-size:10px;font-weight:600}
+  .bn-item.active{color:var(--accent)}
+  .bn-item.active::after{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:18px;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
+  #topbar{height:56px;padding:0 16px}
+  .tb-title{font-size:16px}
+  .hero-greet h1{font-size:22px}
+  .hero-greet{margin:0 0 18px}
+  .kpi .k-val{font-size:25px}
+  #fab{background:var(--mmh-navy);box-shadow:0 8px 22px rgba(11,42,74,.45)}
+  .modal-card,.picker-card{border-radius:22px 22px 0 0}
+  .gal-grid{grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px}
+  .photo-check{width:28px;height:28px}
+}
+
 </style>
 </head>
 <body>
@@ -837,6 +1030,7 @@ table.dt .td-pic{white-space:nowrap}
 
       <!-- TODAY -->
       <div class="view" id="view-today">
+        <div class="hero-greet" id="hero-greet"></div>
         <div class="toolbar" style="justify-content:space-between">
           <div class="range-nav">
             <button class="rn-btn" onclick="shiftDay(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -922,9 +1116,19 @@ table.dt .td-pic{white-space:nowrap}
         </div>
         <div class="gal-toolbar">
           <div id="gal-month-bar" style="display:flex;gap:8px;flex-wrap:wrap;flex:1"></div>
+          <button class="tb-btn" id="gal-select-btn" onclick="toggleGalSelectMode()" style="display:none">
+            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Chọn ảnh
+          </button>
           <button class="tb-btn" onclick="loadGallery(true)">
             <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>Tải lại ảnh
           </button>
+        </div>
+        <div class="gal-selbar" id="gal-selbar">
+          <span class="gsb-count" id="gsb-count">0 ảnh</span>
+          <span class="gsb-sp"></span>
+          <button class="gsb-all" onclick="galSelectAll()">Chọn tất cả</button>
+          <button class="gsb-cancel" onclick="exitGalSelectMode()">Huỷ</button>
+          <button class="gsb-del" onclick="deleteSelectedPhotos()">🗑️ Xoá đã chọn</button>
         </div>
         <div id="gallery-body"><div class="empty-state"><div class="es-icon">🖼️</div><p>Đang tải ảnh địa bàn từ Drive…</p></div></div>
       </div>
@@ -1384,6 +1588,7 @@ var S = {
   ntPhotos:[],
   _cache:{},
   _picker:{field:null, items:[], mode:"hospital", onPick:null, allowAdd:false},  // #6
+  _galSelect:false, _galSel:{},                                                 // #1.multi
   _delTaskArmed:false,                                                            // #3
   _meetTargetField:null,                                                          // #4.1
   _siteList:[],                                                                   // #2
@@ -1501,8 +1706,8 @@ function jsonp(params,timeout){
 }
 function getFetch(params,timeout){
   var ctrl=("AbortController" in window)?new AbortController():null;
-  var tid=ctrl?setTimeout(function(){ctrl.abort();},timeout||25000):0;
-  return fetch(GAS_URL+"?"+buildQS(params),{ method:"GET", redirect:"follow", signal:ctrl?ctrl.signal:undefined })
+  var tid=ctrl?setTimeout(function(){ctrl.abort();},timeout||40000):0;
+  return fetch(GAS_URL+"?"+buildQS(params),{ method:"GET", redirect:"follow", signal:ctrl?ctrl.signal:undefined, cache:"no-store" })
     .then(function(r){ return r.text(); })
     .then(function(t){
       if(tid)clearTimeout(tid);
@@ -1517,25 +1722,28 @@ function getFetch(params,timeout){
     },function(e){
       if(tid)clearTimeout(tid);
       if(e&&e.code==="NOT_JSON") throw e;
-      var err=new Error(e&&e.name==="AbortError" ? "Hết thời gian chờ (fetch timeout)" : ("Lỗi mạng/CORS: "+(e&&e.message||"unknown")));
+      var err=new Error(e&&e.name==="AbortError" ? "Hết thời gian chờ máy chủ" : ("Lỗi mạng: "+(e&&e.message||"không xác định")));
       err.code="FETCH_ERR"; throw err;
     });
 }
+// Phát hiện mobile để chọn chiến lược kết nối tối ưu
+var IS_MOBILE = /Android|iPhone|iPad|iPod|Mobile|Mobi/i.test(navigator.userAgent||"");
 function apiGet(action,extra,payload){
   var params={action:action, pic:S.pic||""};
   if(extra) Object.keys(extra).forEach(function(k){params[k]=extra[k];});
   if(payload) params.p=JSON.stringify(payload);
-  return jsonp(params).then(function(r){
-    if(r&&r.ok===false) throw new Error(r.error||"Lỗi");
-    return r;
-  }, function(eJsonp){
-    return getFetch(params).then(function(r){
-      if(r&&r.ok===false) throw new Error(r.error||"Lỗi");
-      return r;
-    }, function(eFetch){
-      if(eFetch&&eFetch.code==="NOT_JSON") throw eFetch;
-      if(eJsonp&&eJsonp.code==="TIMEOUT") throw eJsonp;
-      throw eJsonp||eFetch||new Error("Không kết nối được");
+  // CHIẾN LƯỢC MỚI: fetch trước (đáng tin trên mobile), JSONP làm dự phòng.
+  // fetch theo redirect ổn định hơn JSONP trên Chrome/Safari mobile & in-app browser.
+  function tryFetch(){ return getFetch(params, 40000).then(function(r){
+    if(r&&r.ok===false) throw new Error(r.error||"Lỗi"); return r; }); }
+  function tryJsonp(){ return jsonp(params, 40000).then(function(r){
+    if(r&&r.ok===false) throw new Error(r.error||"Lỗi"); return r; }); }
+  return tryFetch().catch(function(eFetch){
+    if(eFetch&&eFetch.code==="NOT_JSON") throw eFetch;  // lỗi cấu hình → báo ngay, đừng thử JSONP
+    // fetch lỗi mạng/timeout → thử JSONP
+    return tryJsonp().catch(function(eJsonp){
+      // cả 2 fail → thử fetch lần nữa (mạng chập chờn trên mobile)
+      return tryFetch().catch(function(){ throw eFetch||eJsonp||new Error("Không kết nối được"); });
     });
   });
 }
@@ -1689,10 +1897,11 @@ function boot(pic){
 function retryBoot(){ $("load-error").style.display="none"; $("load-error").innerHTML=""; setProgress(15,"Thử kết nối lại…"); boot(S.pic||"Giang"); }
 function connHint(e){
   var code=e&&e.code;
-  if(code==="NOT_JSON") return "→ Vào Apps Script · Deploy · Manage deployments · Edit · đặt <b>Execute as: Me</b> và <b>Who has access: Anyone</b>, rồi Deploy lại.";
-  if(code==="TIMEOUT") return "→ Máy chủ phản hồi quá chậm hoặc URL /exec sai. Kiểm tra lại GAS_URL.";
-  if(code==="SCRIPT_ERR"||code==="FETCH_ERR") return "→ Không gọi tới được /exec. Kiểm tra URL, mạng/VPN, và deployment đã publish chưa.";
-  return "→ Bấm 'Kiểm tra kết nối' để xem máy chủ trả về gì.";
+  var mob = IS_MOBILE ? "<br>📱 Trên điện thoại: hãy mở bằng <b>Chrome</b> hoặc <b>Safari</b> (không mở trong app Facebook/Zalo), và thử lại." : "";
+  if(code==="NOT_JSON") return "→ Vào Apps Script · Deploy · Manage deployments · Edit · đặt <b>Execute as: Me</b> và <b>Who has access: Anyone</b>, rồi Deploy lại."+mob;
+  if(code==="TIMEOUT") return "→ Máy chủ phản hồi chậm. Thử lại sau vài giây."+mob;
+  if(code==="SCRIPT_ERR"||code==="FETCH_ERR") return "→ Không gọi tới được máy chủ. Kiểm tra mạng/wifi và thử lại."+mob;
+  return "→ Bấm 'Kiểm tra kết nối' để xem chi tiết."+mob;
 }
 function runDiagnostic(){
   var out=$("diag-out");
@@ -1790,6 +1999,7 @@ function setPicView(p){
 
 /* ═══════════════ VIEW ROUTING ═══════════════ */
 function switchView(v){
+  if(v!=="gallery" && S._galSelect){ S._galSelect=false; S._galSel={}; }
   S.view=v;
   document.querySelectorAll(".view").forEach(function(el){ el.classList.remove("active"); });
   var vw=$("view-"+v); if(vw) vw.classList.add("active");
@@ -2068,7 +2278,23 @@ function ensureXLSX(cb){
 function goToday(){ S.day=new Date(); S.day.setHours(0,0,0,0); renderDay(); }
 function shiftDay(n){ S.day.setDate(S.day.getDate()+n); renderDay(); }
 function pickDay(v){ if(v){ S.day=new Date(v); S.day.setHours(0,0,0,0); renderDay(); } }
+function renderGreeting(){
+  var el=$("hero-greet"); if(!el) return;
+  var h=new Date().getHours();
+  var part = h<11?"Chào buổi sáng" : h<14?"Chào buổi trưa" : h<18?"Chào buổi chiều" : "Chào buổi tối";
+  var name=(S.user&&S.user.pic)||"";
+  var rows=visibleRows();
+  var today=new Date(); today.setHours(0,0,0,0);
+  var tToday=rows.filter(function(r){ var d=parseDMY(r.startDate); return d&&sameDay(d,today); });
+  var doneToday=tToday.filter(function(r){return /complet/i.test(r.taskStatus);}).length;
+  var sub;
+  if(!tToday.length) sub="Hôm nay chưa có lịch đi địa bàn. Sẵn sàng tạo task mới?";
+  else if(doneToday>=tToday.length) sub="Tuyệt vời — bạn đã hoàn thành cả "+tToday.length+" task hôm nay 🎉";
+  else sub="Hôm nay bạn có <b style=\"color:var(--text)\">"+tToday.length+"</b> task · đã xong <b style=\"color:var(--success)\">"+doneToday+"</b>";
+  el.innerHTML='<h1><span class="wave">👋</span> '+part+', '+esc(name)+'</h1><p>'+sub+'</p>';
+}
 function renderDay(){
+  renderGreeting();
   var rows=visibleRows().filter(function(r){ var d=parseDMY(r.startDate); return d&&sameDay(d,S.day); });
   rows.sort(function(a,b){return (a.no||0)-(b.no||0);});
   var today=new Date(); today.setHours(0,0,0,0);
@@ -2526,8 +2752,8 @@ function deleteTaskFlow(){
 
 /* ═══════════════ #1 — DELETE PHOTO (admin) ═══════════════ */
 function deletePhoto(fileId, viewUrl){
-  if(!confirm("Xoá vĩnh viễn ảnh này khỏi Drive và sheet? Hệ thống sẽ đánh số lại các ảnh còn lại của PIC trong tháng.")) return;
-  overlay(true,"Đang xoá ảnh","Xoá file Drive, gỡ URL & đánh số lại…");
+  if(!confirm("Xoá vĩnh viễn ảnh này khỏi Drive và sheet?")) return;
+  overlay(true,"Đang xoá ảnh","Xoá file Drive & gỡ URL…");
   var body={ action:"deletePhoto", rowIndex:S.drawerRow };
   if(fileId) body.fileId=fileId;
   if(viewUrl) body.viewUrl=viewUrl;
@@ -2793,6 +3019,8 @@ function renderGallery(){
     +'<div class="gal-stat"><div class="gs-ico">🗓</div><div><div class="gs-v">'+Object.keys(sum.byMonth||{}).length+'</div><div class="gs-l">Số tháng</div></div></div>'
     +'<div class="gal-stat"><div class="gs-ico">👤</div><div><div class="gs-v">'+nPic+'</div><div class="gs-l">PIC có ảnh</div></div></div>';
   renderPicMonthTable(sum.byPic||{});
+  // #1.multi — nút "Chọn ảnh" chỉ cho admin
+  var selBtn=$("gal-select-btn"); if(selBtn) selBtn.style.display = isAdminUser ? "" : "none";
   var months={}; photos.forEach(function(p){ if(p.ym) months[p.ym]=(months[p.ym]||0)+1; });
   var mk=Object.keys(months).sort().reverse();
   var bar='<button class="filter-chip'+(S.galMonth==="ALL"?" active":"")+'" onclick="setGalMonth(\'ALL\')">Tất cả ('+photos.length+')</button>';
@@ -2806,16 +3034,23 @@ function renderGallery(){
   if(!list.length){ body.innerHTML='<div class="empty-state"><div class="es-icon">🖼️</div><p>Chưa có ảnh nào</p></div>'; return; }
   var groups={};
   list.forEach(function(p){ var a=p.account||"Khác"; (groups[a]=groups[a]||[]).push(p); });
+  var selMode=!!S._galSelect;
   var html="";
   Object.keys(groups).sort().forEach(function(a){
     var arr=groups[a];
     html+='<div class="gal-group"><div class="gal-acc">🏥 '+esc(a)+'<span class="ga-count">'+arr.length+' ảnh</span></div><div class="gal-grid">';
     html+=arr.map(function(p){
+      var pid=p.id||driveId(p.url);
       var place= p.place? p.place : (p.gps? (p.gps.lat.toFixed(4)+", "+p.gps.lng.toFixed(4)) : "");
       var cap=(p.pic||"")+" · "+(p.createdStr||"")+(place?" · "+place:"");
-      var delBtn = isAdminUser ? '<button class="gal-del" title="Xoá ảnh" onclick="event.stopPropagation();deleteGalleryPhoto(\''+jsq(p.id||driveId(p.url))+'\',\''+jsq(p.url)+'\')">✕</button>' : '';
-      return '<div class="gal-item">'+delBtn
-        +'<div class="gi-img" onclick="openLightbox(\''+jsq(p.thumb)+'\',\''+jsq(p.url)+'\',\''+jsq(cap)+'\','+(isAdminUser?'true':'false')+',\''+jsq(p.id||driveId(p.url))+'\')"><img src="'+esc(p.thumb)+'" loading="lazy" onerror="this.parentNode.parentNode.style.display=\'none\'"/></div>'
+      var isSel = selMode && S._galSel && S._galSel[pid];
+      // ở chế độ chọn: hiện checkbox, bấm ảnh = toggle chọn. Ngược lại: nút ✕ + mở lightbox
+      var checkbox = selMode ? '<div class="photo-check'+(isSel?" on":"")+'" onclick="event.stopPropagation();toggleGalPhoto(\''+jsq(pid)+'\',\''+jsq(p.url)+'\')">'+(isSel?"✓":"")+'</div>' : '';
+      var delBtn = (!selMode && isAdminUser) ? '<button class="gal-del" title="Xoá ảnh" onclick="event.stopPropagation();deleteGalleryPhoto(\''+jsq(pid)+'\',\''+jsq(p.url)+'\')">✕</button>' : '';
+      var imgClick = selMode ? 'toggleGalPhoto(\''+jsq(pid)+'\',\''+jsq(p.url)+'\')'
+        : 'openLightbox(\''+jsq(p.thumb)+'\',\''+jsq(p.url)+'\',\''+jsq(cap)+'\','+(isAdminUser?'true':'false')+',\''+jsq(pid)+'\')';
+      return '<div class="gal-item'+(isSel?" sel-photo":"")+'">'+checkbox+delBtn
+        +'<div class="gi-img" onclick="'+imgClick+'"><img src="'+esc(p.thumb)+'" loading="lazy" onerror="this.parentNode.parentNode.style.display=\'none\'"/></div>'
         +'<div class="gi-meta">'
           +'<div class="gi-date">'+esc((p.createdStr||"").split(" ")[0])+'</div>'
           +(place?'<div class="gi-place">📍 '+esc(place)+'</div>':'<div class="gi-place" style="color:#bbb">— không có vị trí</div>')
@@ -2825,11 +3060,57 @@ function renderGallery(){
     html+='</div></div>';
   });
   body.innerHTML=html;
+  updateGalSelbar();
+}
+// #1.multi — chế độ chọn nhiều ảnh để xoá hàng loạt
+function toggleGalSelectMode(){
+  S._galSelect=true; S._galSel={};
+  var b=$("gal-select-btn"); if(b) b.style.display="none";
+  renderGallery();
+}
+function exitGalSelectMode(){
+  S._galSelect=false; S._galSel={};
+  renderGallery();
+}
+function toggleGalPhoto(id,url){
+  if(!S._galSel) S._galSel={};
+  if(S._galSel[id]) delete S._galSel[id]; else S._galSel[id]={id:id,url:url};
+  renderGallery();
+}
+function galSelectAll(){
+  if(!S._galSel) S._galSel={};
+  var list= S.galMonth==="ALL"? (S.gallery||[]) : (S.gallery||[]).filter(function(p){return p.ym===S.galMonth;});
+  var allSel = list.every(function(p){ return S._galSel[p.id||driveId(p.url)]; });
+  if(allSel){ S._galSel={}; }
+  else list.forEach(function(p){ var id=p.id||driveId(p.url); S._galSel[id]={id:id,url:p.url}; });
+  renderGallery();
+}
+function updateGalSelbar(){
+  var bar=$("gal-selbar"); if(!bar) return;
+  if(!S._galSelect){ bar.classList.remove("show"); return; }
+  var n=S._galSel?Object.keys(S._galSel).length:0;
+  bar.classList.add("show");
+  $("gsb-count").textContent=n+" ảnh đã chọn";
+}
+function deleteSelectedPhotos(){
+  var sel=S._galSel?Object.keys(S._galSel):[];
+  if(!sel.length){ showToast("Chưa chọn ảnh nào"); return; }
+  if(!confirm("Xoá vĩnh viễn "+sel.length+" ảnh đã chọn khỏi Drive và sheet?")) return;
+  var ids=sel.map(function(k){return S._galSel[k].id;});
+  var urls=sel.map(function(k){return S._galSel[k].url;});
+  overlay(true,"Đang xoá ảnh","Xoá "+sel.length+" ảnh & đánh số lại…");
+  var body={ action:"deletePhotos", fileIds:ids.join(","), viewUrls:urls.join(",") };
+  apiPost(body,120000).then(function(r){
+    overlay(false); showToast("✓ "+(r.message||("Đã xoá "+sel.length+" ảnh")));
+    exitGalSelectMode(); loadGallery(true); refreshData(false);
+  }).catch(function(e){
+    overlay(false); showToast("⚠️ Lỗi xoá ảnh: "+e.message);
+  });
 }
 // #1 — xoá ảnh từ gallery (không gắn với 1 task cụ thể → backend tự tìm row theo URL)
 function deleteGalleryPhoto(fileId, url){
-  if(!confirm("Xoá vĩnh viễn ảnh này khỏi Drive và sheet? Hệ thống sẽ đánh số lại các ảnh còn lại của PIC trong tháng.")) return;
-  overlay(true,"Đang xoá ảnh","Xoá file Drive, gỡ URL & đánh số lại…");
+  if(!confirm("Xoá vĩnh viễn ảnh này khỏi Drive và sheet?")) return;
+  overlay(true,"Đang xoá ảnh","Xoá file Drive & gỡ URL…");
   var body={ action:"deletePhoto" };
   if(fileId) body.fileId=fileId;
   if(url) body.viewUrl=url;
